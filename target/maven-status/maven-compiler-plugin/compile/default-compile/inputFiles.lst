@@ -1,0 +1,15 @@
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\WebSecurityConfig.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\schedulerController\dto\DailyJobsDTO.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\schedulerController\utils\ConnectionUtils.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\constants\OracleConstants.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\schedulerController\dto\ArchiveJobsDTO.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\IigOracleApplication.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\schedulerController\dao\SchedularDAO.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\schedulerController\SchedularController.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\schedulerController\utils\EncryptionUtil.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\schedulerService\SchedularServiceImpl.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\schedulerController\dto\MasterJobsDTO.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\schedulerController\utils\OracleConnUtils.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\schedulerController\dao\SchedularDAOImpl.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\AppRole.java
+D:\Git\JuniperOnPremOraScheduler\src\main\java\com\iig\gcp\scheduler\schedulerService\SchedularService.java

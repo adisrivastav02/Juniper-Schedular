@@ -1,0 +1,15 @@
+com\iig\gcp\scheduler\schedulerService\SchedularServiceImpl.class
+com\iig\gcp\scheduler\IigOracleApplication.class
+com\iig\gcp\scheduler\AppRole.class
+com\iig\gcp\scheduler\schedulerController\dao\SchedularDAOImpl.class
+com\iig\gcp\scheduler\schedulerController\SchedularController.class
+com\iig\gcp\scheduler\schedulerController\dto\MasterJobsDTO.class
+com\iig\gcp\scheduler\schedulerService\SchedularService.class
+com\iig\gcp\scheduler\WebSecurityConfig.class
+com\iig\gcp\scheduler\schedulerController\utils\EncryptionUtil.class
+com\iig\gcp\scheduler\schedulerController\dto\DailyJobsDTO.class
+com\iig\gcp\scheduler\schedulerController\dao\SchedularDAO.class
+com\iig\gcp\scheduler\schedulerController\utils\ConnectionUtils.class
+com\iig\gcp\scheduler\schedulerController\utils\OracleConnUtils.class
+com\iig\gcp\scheduler\schedulerController\dto\ArchiveJobsDTO.class
+com\iig\gcp\scheduler\constants\OracleConstants.class
