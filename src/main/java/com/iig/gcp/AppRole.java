@@ -1,4 +1,4 @@
-package com.iig.gcp.scheduler;
+package com.iig.gcp;
 
 public class AppRole {
         

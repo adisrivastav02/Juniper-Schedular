@@ -198,24 +198,7 @@
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-stretch">
       	<div class="navbar-nav navbar-nav-left">
-			<select class="form-control"
-					id="projects" name="projects">
-					  <%
-							if (session.getAttribute("project") != null) {
-						%>
-						<option value="${project}" selected>${project}</option>
-						<%
-							}else{
-						%>
-					<option value="" selected>Project ...</option>
-					<%
-							}
-					%>
-					<c:forEach items="${arrProject}" var="arrProject">
-						<option value="${arrProject.project_id}">${arrProject.project_id}</option>
-					</c:forEach>
-				</select>
-
+			
         </div>
         <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item nav-profile dropdown">
@@ -223,17 +206,17 @@
               <div class="nav-profile-img">
               
            <c:choose>
-			    <c:when test="${user.user_id=='admin'}"><img src="${pageContext.request.contextPath}/assets/img/faces/jiten.jpg" alt="image"></c:when>
-			    <c:when test="${user.user_id=='vaibhav'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
-			    <c:when test="${user.user_id=='abhishek'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
-			    <c:when test="${user.user_id=='test'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
+			    <c:when test="${user_id=='admin'}"><img src="${pageContext.request.contextPath}/assets/img/faces/jiten.jpg" alt="image"></c:when>
+			    <c:when test="${user_id=='vaibhav'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
+			    <c:when test="${user_id=='abhishek'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
+			    <c:when test="${user_id=='test'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
 			    <c:otherwise><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:otherwise>
 			</c:choose>
 			 
                 <span class="availability-status online"></span>             
               </div>
               <div class="nav-profile-text">
-                <p class="mb-1 text-black">${user.user_id}</p>
+                <p class="mb-1 text-black">${user_id}</p>
               </div>
             </a>
             <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
@@ -273,32 +256,27 @@
             <a href="#" class="nav-link">
               <div class="nav-profile-image">
                 <c:choose>
-			   <c:when test="${user.user_id=='admin'}"><img src="${pageContext.request.contextPath}/assets/img/faces/jiten.jpg" alt="image"></c:when>
-			    <c:when test="${user.user_id=='vaibhav'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
-			    <c:when test="${user.user_id=='abhishek'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
-			    <c:when test="${user.user_id=='test'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
+			   <c:when test="${user_id=='admin'}"><img src="${pageContext.request.contextPath}/assets/img/faces/jiten.jpg" alt="image"></c:when>
+			    <c:when test="${user_id=='vaibhav'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
+			    <c:when test="${user_id=='abhishek'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
+			    <c:when test="${user_id=='test'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
 			    <c:otherwise><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:otherwise>
 			</c:choose>
                 <span class="login-status online"></span> <!--change to offline or busy as needed-->              
               </div>
               <div class="nav-profile-text d-flex flex-column">
-                <span class="font-weight-bold mb-2">${user.user_id}</span>
+                <span class="font-weight-bold mb-2">${user_id}</span>
                 <span class="text-secondary text-small">Application User</span>
               </div>
               <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/login/dashboard">
-              <span class="menu-title">Feature Dashboard</span>
-              <i class="mdi mdi-home menu-icon"></i>
-            </a>
-          </li>
+          
           <li class="nav-item">
    <a class="nav-link" data-toggle="collapse" href="#scheduler" aria-expanded="false" aria-controls="scheduler"> <span class="menu-title">Scheduler</span> <i class="menu-arrow"></i> <i class="mdi mdi-timer menu-icon"></i> </a> 
    <div class="collapse" id="scheduler">
       <ul class="nav flex-column sub-menu">
-			<li class="nav-item"> <a class="nav-link" href="/scheduler/alljobs"> Master Feed Details </a></li>
+			<li class="nav-item"> <a class="nav-link" href="/scheduler/viewAllJobs"> Master Feed Details </a></li>
 			<li class="nav-item"> <a class="nav-link" href="/scheduler/scheduledjobs"> Current Feed Details </a></li>
       </ul>
    </div>

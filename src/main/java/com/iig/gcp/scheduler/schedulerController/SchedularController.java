@@ -13,6 +13,10 @@ import javax.validation.Valid;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -38,6 +42,72 @@ public class SchedularController {
 
 	@Autowired
 	SchedularService schedularService;
+	
+	@Autowired
+    private AuthenticationManager authenticationManager;
+	
+	
+	
+	// Master Table
+
+		/**
+		 * 
+		 * @param modelMap
+		 * @return
+		 */
+		@RequestMapping(value = { "/" }, method = RequestMethod.GET)
+		public ModelAndView homePage(@Valid @ModelAttribute("jsonObject") String jsonObject,ModelMap modelMap,HttpServletRequest request) {
+			//Validate the token at the first place
+			try {
+			JSONObject jsonModelObject = null;
+			if(modelMap.get("jsonObject")== null || modelMap.get("jsonObject").equals("")) {
+				//TODO: Redirect to Access Denied Page
+				return new ModelAndView("/login");
+			}
+			jsonModelObject = new JSONObject( modelMap.get("jsonObject").toString());
+			authenticationByJWT("jwt", jsonModelObject.get("jwt").toString());
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+				return new ModelAndView("/login");
+				//redirect to Login Page
+			}
+			
+			JSONObject jObj = new JSONObject(jsonObject);
+			usr=jObj.getString("user");
+			proj=jObj.getString("project");
+			modelMap.addAttribute("user_id", usr);
+			return new ModelAndView("/index");
+		}
+		
+		private void authenticationByJWT(String name, String token) {
+			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken("jwt", token);
+	        Authentication authenticate = authenticationManager.authenticate(authToken);
+	        SecurityContextHolder.getContext().setAuthentication(authenticate);
+		}
+		
+		/**
+		 * 
+		 * @param modelMap
+		 * @return
+		 */
+		@RequestMapping(value = { "/scheduler/viewAllJobs" }, method = RequestMethod.GET)
+		public ModelAndView allJobs(ModelMap modelMap,HttpServletRequest request) {
+			try {
+				
+				modelMap.addAttribute("user_id", usr);
+				HashMap<String, List<MasterJobsDTO>> hsMap = new HashMap<String, List<MasterJobsDTO>>();
+				hsMap.put("ALL", schedularService.allLoadJobs((String)request.getSession().getAttribute("project")));
+				ArrayList<String> arrfeedId = schedularService.getFeedFromMaster((String)request.getSession().getAttribute("project"));
+				modelMap.addAttribute("arrfeedId", arrfeedId);
+				modelMap.addAttribute("allLoadJobs", hsMap.get("ALL"));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return new ModelAndView("/schedular/viewAllJobs");
+		}
+		
+
 
 	/**
 	 * This method populates the View Run Statics Screen with FeedID
@@ -211,28 +281,7 @@ public class SchedularController {
 
 	}
 
-	// Master Table
-
-	/**
-	 * 
-	 * @param modelMap
-	 * @return
-	 */
-	@RequestMapping(value = { "/" }, method = RequestMethod.GET)
-	public ModelAndView allJobs(ModelMap modelMap,HttpServletRequest request) {
-		try {
-			
-			HashMap<String, List<MasterJobsDTO>> hsMap = new HashMap<String, List<MasterJobsDTO>>();
-			hsMap.put("ALL", schedularService.allLoadJobs((String)request.getSession().getAttribute("project")));
-			ArrayList<String> arrfeedId = schedularService.getFeedFromMaster((String)request.getSession().getAttribute("project"));
-			modelMap.addAttribute("arrfeedId", arrfeedId);
-			modelMap.addAttribute("allLoadJobs", hsMap.get("ALL"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return new ModelAndView("schedular/viewAllJobs");
-	}
-
+	
 	/**
 	 * 
 	 * @param frequency
@@ -280,6 +329,7 @@ public class SchedularController {
 			hsMap.put("ALL", schedularService.allCurrentJobs((String)request.getSession().getAttribute("project")));
 			ArrayList<String> arrfeedId = schedularService.getFeedFromCurrent((String)request.getSession().getAttribute("project"));
 			modelMap.addAttribute("arrfeedId", arrfeedId);
+			modelMap.addAttribute("user_id", usr);
 			modelMap.addAttribute("allLoadJobs", hsMap.get("ALL"));
 		} catch (Exception e) {
 			e.printStackTrace();
