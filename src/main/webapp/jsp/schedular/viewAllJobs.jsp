@@ -115,6 +115,7 @@ $(document).ready(function() {
 							<div class="row">
 						   <div class="form-group col-md-6 ">
 						   		<label>Feed Id</label> 
+						   		
 											<select class="form-control" name="arrfeedId" id="arrfeedId">
 												<option value="ALL" selected="selected">All</option>
 											    <c:forEach items="${arrfeedId}" var="arrfeedId">

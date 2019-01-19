@@ -35,10 +35,10 @@ import com.iig.gcp.scheduler.schedulerController.utils.*;
 import com.iig.gcp.scheduler.schedulerService.*;
 
 @Controller
+@SessionAttributes(value= {"user_name","project_name"})
 public class SchedularController {
 	
-	public String usr="";
-	public String proj="";
+	
 
 	@Autowired
 	SchedularService schedularService;
@@ -72,11 +72,15 @@ public class SchedularController {
 				return new ModelAndView("/login");
 				//redirect to Login Page
 			}
-			
 			JSONObject jObj = new JSONObject(jsonObject);
-			usr=jObj.getString("user");
-			proj=jObj.getString("project");
-			modelMap.addAttribute("user_id", usr);
+			String user_name=jObj.getString("user");
+			String project_name=jObj.getString("project");
+			String jwt=jObj.getString("jwt");
+			
+			request.getSession().setAttribute("user_name", user_name);
+			request.getSession().setAttribute("project_name", project_name);
+			request.getSession().setAttribute("jwt", jwt);
+			
 			return new ModelAndView("/index");
 		}
 		
@@ -95,10 +99,10 @@ public class SchedularController {
 		public ModelAndView allJobs(ModelMap modelMap,HttpServletRequest request) {
 			try {
 				
-				modelMap.addAttribute("user_id", usr);
+			
 				HashMap<String, List<MasterJobsDTO>> hsMap = new HashMap<String, List<MasterJobsDTO>>();
-				hsMap.put("ALL", schedularService.allLoadJobs((String)request.getSession().getAttribute("project")));
-				ArrayList<String> arrfeedId = schedularService.getFeedFromMaster((String)request.getSession().getAttribute("project"));
+				hsMap.put("ALL", schedularService.allLoadJobs((String)request.getSession().getAttribute("project_name")));
+				ArrayList<String> arrfeedId = schedularService.getFeedFromMaster((String)request.getSession().getAttribute("project_name"));
 				modelMap.addAttribute("arrfeedId", arrfeedId);
 				modelMap.addAttribute("allLoadJobs", hsMap.get("ALL"));
 			} catch (Exception e) {
@@ -215,7 +219,6 @@ public class SchedularController {
 		try {
 			String message = schedularService.deleteJobFromMaster(feedId);
 			modelMap.addAttribute("successString", "Job deleted");
-			System.out.println(message);
 
 		} catch (Exception e) {
 
@@ -268,8 +271,7 @@ public class SchedularController {
 			}
 
 			String json = mapper.writeValueAsString(arrBatchDate);
-			System.out.println("json String" + json.toString());
-			System.out.println(" arrDuration" + arrDuration);
+			//System.out.println(" arrDuration" + arrDuration);
 			modelMap.addAttribute("x", json.toString());
 			modelMap.addAttribute("y", arrDuration.toString());
 			List<ArchiveJobsDTO> arrArchiveTable = schedularService.getRunStats(job_id, feed_id);
@@ -326,10 +328,10 @@ public class SchedularController {
 	public ModelAndView allCurrentJobs(ModelMap modelMap,HttpServletRequest request) {
 		try {
 			HashMap<String, List<DailyJobsDTO>> hsMap = new HashMap<String, List<DailyJobsDTO>>();
-			hsMap.put("ALL", schedularService.allCurrentJobs((String)request.getSession().getAttribute("project")));
-			ArrayList<String> arrfeedId = schedularService.getFeedFromCurrent((String)request.getSession().getAttribute("project"));
+			hsMap.put("ALL", schedularService.allCurrentJobs((String)request.getSession().getAttribute("project_name")));
+			ArrayList<String> arrfeedId = schedularService.getFeedFromCurrent((String)request.getSession().getAttribute("project_name"));
 			modelMap.addAttribute("arrfeedId", arrfeedId);
-			modelMap.addAttribute("user_id", usr);
+			modelMap.addAttribute("user_id", (String)request.getSession().getAttribute("user_name"));
 			modelMap.addAttribute("allLoadJobs", hsMap.get("ALL"));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -417,7 +419,7 @@ public class SchedularController {
 			 ModelMap modelMap) {
 		try {
 			String message="Reached the add task controller block";
-			System.out.println(message);
+			//System.out.println(message);
 			//String message = schedularService.killCurrentJob(feedId, jobId, batchDate);
 			//modelMap.addAttribute("successString", message);
 		} catch (Exception e) {
@@ -432,7 +434,7 @@ public class SchedularController {
 	public ModelAndView AddBatch1(@Valid ModelMap modelMap) {
 		try {
 			String message="Reached the add batch controller block Post";
-			System.out.println(message);
+			//System.out.println(message);
 			//String message = schedularService.killCurrentJob(feedId, jobId, batchDate);
 			//modelMap.addAttribute("successString", message);
 		} catch (Exception e) {
@@ -447,7 +449,7 @@ public class SchedularController {
 			 ModelMap modelMap) {
 		try {
 			String message="Reached the l task controller block";
-			System.out.println(message);
+			//System.out.println(message);
 			//String message = schedularService.killCurrentJob(feedId, jobId, batchDate);
 			//modelMap.addAttribute("successString", message);
 		} catch (Exception e) {
