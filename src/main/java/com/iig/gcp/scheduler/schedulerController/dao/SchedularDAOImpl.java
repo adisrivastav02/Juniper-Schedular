@@ -341,7 +341,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		pstm = conn.prepareStatement(query);
 		rs = pstm.executeQuery();
 		while (rs.next()) {
-			System.out.println("in DB K" + String.valueOf(rs.getInt(1)));
+			//System.out.println("in DB K" + String.valueOf(rs.getInt(1)));
 			arrKey.add(String.valueOf(rs.getInt(1)));
 			arrValue.add(rs.getString(2));
 		}
@@ -655,7 +655,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		return (rs + "Job run with FeedID: " + feedId + " and JobID: " + jobId + " on Batch Date: " + batchDate);
 		}
 		catch (Exception e) {
-			System.out.println(e.toString());
+			//System.out.println(e.toString());
 			return (e.toString());
 
 		}finally {	
@@ -682,7 +682,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		return (rs + "Killed job with FeedID: " + feedId + " and JobID: " + jobId + " on Batch Date: " + batchDate);
 		}
 		catch (Exception e) {
-			System.out.println(e.toString());
+			//System.out.println(e.toString());
 			return (e.toString());
 
 		}finally {	
