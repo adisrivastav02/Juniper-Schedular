@@ -5,23 +5,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
  
 @Component
 public class ConnectionUtils {
  
-    public static Connection getConnection() 
+	@Autowired
+    private DataSource dataSource;
+	
+    public Connection getConnection() 
               throws Exception, ClassNotFoundException, SQLException {
  
-        // Here I using Oracle Database.
-        // (You can change to use another database.)
-        //return OracleConnUtils.getOracleConnection();
-         
-         return OracleConnUtils.getOracleConnection();
-         //return MySQLConnUtils.getMySQLConnection();
-        // return SQLServerConnUtils_JTDS.getSQLServerConnection_JTDS();
-        // return SQLServerConnUtils_SQLJDBC.getSQLServerConnection_SQLJDBC();
-        // return PostGresConnUtils.getPostGresConnection();
+    	return dataSource.getConnection();
     }
     
  

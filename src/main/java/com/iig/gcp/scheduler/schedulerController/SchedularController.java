@@ -13,6 +13,7 @@ import javax.validation.Valid;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,18 +36,17 @@ import com.iig.gcp.scheduler.schedulerController.utils.*;
 import com.iig.gcp.scheduler.schedulerService.*;
 
 @Controller
-@SessionAttributes(value= {"user_name","project_name"})
+@SessionAttributes(value= {"user_name","project_name","jwt"})
 public class SchedularController {
 	
-	
+	@Value("${parent.front.micro.services}")
+	private static String parent_ms;
 
 	@Autowired
 	SchedularService schedularService;
 	
 	@Autowired
     private AuthenticationManager authenticationManager;
-	
-	
 	
 	// Master Table
 
@@ -58,6 +58,18 @@ public class SchedularController {
 		@RequestMapping(value = { "/" }, method = RequestMethod.GET)
 		public ModelAndView homePage(@Valid @ModelAttribute("jsonObject") String jsonObject,ModelMap modelMap,HttpServletRequest request) {
 			//Validate the token at the first place
+			
+			
+			if(jsonObject== null || jsonObject.equals("")) {
+				//TODO: Redirect to Access Denied Page
+				return new ModelAndView("/login");
+			}
+			
+			JSONObject jObj = new JSONObject(jsonObject);
+			String user_name=jObj.getString("user");
+			String project_name=jObj.getString("project");
+			String jwt=jObj.getString("jwt");
+			
 			try {
 			JSONObject jsonModelObject = null;
 			if(modelMap.get("jsonObject")== null || modelMap.get("jsonObject").equals("")) {
@@ -65,17 +77,15 @@ public class SchedularController {
 				return new ModelAndView("/login");
 			}
 			jsonModelObject = new JSONObject( modelMap.get("jsonObject").toString());
-			authenticationByJWT("jwt", jsonModelObject.get("jwt").toString());
+			
+			authenticationByJWT(user_name+":"+project_name, jsonModelObject.get("jwt").toString());
 			}
 			catch(Exception e) {
 				e.printStackTrace();
 				return new ModelAndView("/login");
 				//redirect to Login Page
 			}
-			JSONObject jObj = new JSONObject(jsonObject);
-			String user_name=jObj.getString("user");
-			String project_name=jObj.getString("project");
-			String jwt=jObj.getString("jwt");
+			
 			
 			request.getSession().setAttribute("user_name", user_name);
 			request.getSession().setAttribute("project_name", project_name);
@@ -85,7 +95,7 @@ public class SchedularController {
 		}
 		
 		private void authenticationByJWT(String name, String token) {
-			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken("jwt", token);
+			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(name, token);
 	        Authentication authenticate = authenticationManager.authenticate(authToken);
 	        SecurityContextHolder.getContext().setAuthentication(authenticate);
 		}
@@ -419,9 +429,6 @@ public class SchedularController {
 			 ModelMap modelMap) {
 		try {
 			String message="Reached the add task controller block";
-			//System.out.println(message);
-			//String message = schedularService.killCurrentJob(feedId, jobId, batchDate);
-			//modelMap.addAttribute("successString", message);
 		} catch (Exception e) {
 			//modelMap.addAttribute("errorStatus", e.getMessage());
 
@@ -434,11 +441,7 @@ public class SchedularController {
 	public ModelAndView AddBatch1(@Valid ModelMap modelMap) {
 		try {
 			String message="Reached the add batch controller block Post";
-			//System.out.println(message);
-			//String message = schedularService.killCurrentJob(feedId, jobId, batchDate);
-			//modelMap.addAttribute("successString", message);
 		} catch (Exception e) {
-			//modelMap.addAttribute("errorStatus", e.getMessage());
 
 		}
 		return new ModelAndView("schedular/AddBatch");
@@ -468,4 +471,15 @@ public class SchedularController {
 		modelMap.addAttribute("proj_val", projects);
 		return new ModelAndView("/index");
 	}*/
+	
+	@RequestMapping(value = { "/schedular/error"}, method = RequestMethod.GET)
+	public ModelAndView error(ModelMap modelMap,HttpServletRequest request) {
+		return new ModelAndView("/index");
+	}
+	
+	@RequestMapping(value = { "/schedular/logout"}, method = RequestMethod.GET)
+	public ModelAndView logout(ModelMap modelMap,HttpServletRequest request) {
+		request.getSession().invalidate();
+		return new ModelAndView("redirect:" + parent_ms);
+	}
 }

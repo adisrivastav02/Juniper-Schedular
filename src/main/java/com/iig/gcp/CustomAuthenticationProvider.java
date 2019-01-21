@@ -19,13 +19,41 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
+	
+	public static class MyUser{
+		private String name;
+		private String project;
+		private String jwt;
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getProject() {
+			return project;
+		}
+		public void setProject(String project) {
+			this.project = project;
+		}
+		public String getJwt() {
+			return jwt;
+		}
+		public void setJwt(String jwt) {
+			this.jwt = jwt;
+		}
+		
+		
+		
+	}
 
 	public static final String SECRET = "SecretKeyToGenJWTs";
 
     @Override
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
-        String name = authentication.getName();
+        String name = authentication.getName().split(":")[0];
+        String project = authentication.getName().split(":")[1];
         Object credentials = authentication.getCredentials();
         System.out.println("credentials class: " + credentials.getClass());
         if (!(credentials instanceof String)) {
@@ -46,8 +74,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         grantedAuthorities.add(new SimpleGrantedAuthority("ADMIN"));
+        MyUser myUser = new MyUser();
+        myUser.setName(name);
+        myUser.setProject(project);
+        myUser.setJwt(password);
+        
         Authentication auth = new
-                UsernamePasswordAuthenticationToken(name, password, grantedAuthorities);
+                UsernamePasswordAuthenticationToken(myUser, password, grantedAuthorities);
         return auth;
     }
 

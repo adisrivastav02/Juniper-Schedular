@@ -14,7 +14,7 @@
             </div>
             <div class="row mt-5">
               <div class="col-12 text-center mt-xl-2">
-                <a class="text-white font-weight-medium" href="/index">Back to Home</a>
+                <a class="text-white font-weight-medium" href="/schedular/error">Back to Home</a>
               </div>
             </div>
           </div>

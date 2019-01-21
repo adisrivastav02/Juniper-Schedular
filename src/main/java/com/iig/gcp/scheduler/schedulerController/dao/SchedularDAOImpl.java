@@ -15,6 +15,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,8 @@ import com.iig.gcp.scheduler.schedulerController.utils.*;
 @Component
 public class SchedularDAOImpl implements SchedularDAO {
 
+	@Autowired
+	private ConnectionUtils ConnectionUtils;
 	//DateFormat batchDate = new SimpleDateFormat("yyyy-MM-dd");
 	//DateFormat lastUpdateTs = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	//DateFormat jobScheduleTime = new SimpleDateFormat("hh:mm:ss");
@@ -178,11 +181,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 		}
 		*/
 		
-		String query = "delete from JUNIPER_SCH_MASTER_JOB_DETAIL batch_id=?";
+		String query = "delete from JUNIPER_SCH_MASTER_JOB_DETAIL where batch_id=?";
 		pstm1 = conn.prepareStatement(query);
-		pstm1.setString(2, feedId);	
+		pstm1.setString(1, feedId);	
 		rs = pstm1.executeUpdate();
-		ConnectionUtils.closeQuietly(conn);
 		return (rs + " Jobs deleted with FeedID: " + feedId);
 	
 		} catch (ClassNotFoundException | SQLException e) {

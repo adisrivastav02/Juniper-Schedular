@@ -55,7 +55,7 @@ $(document).ready(function() {
 						});
 					});		
 			
-			$("#suspend ").click(function(){
+			$("#suspend").click(function(){
 				var $row = $(this).closest("tr");
 				var $feedId = $row.find('td:eq( 0 )').html();
 				//var $jobId = $row.find('td:eq( 1 )').html();
@@ -182,9 +182,6 @@ $(document).ready(function() {
                         <th>
                          Delete
                         </th>
-                        <th>
-                        Suspend
-                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -205,13 +202,13 @@ $(document).ready(function() {
 						</a>
 						<!-- <button type="button" class="btn btn-danger btn-fw">Delete</button> -->
 						</td>
-						<td style="max-width:50px">
+						<!--  <td style="max-width:50px">
 							<input type="hidden" id="img_id" value="${row.is_suspended}"/>
 							<a href="#">
 								<img id="suspend" name="suspend" src="${pageContext.request.contextPath}/assets/img/${row.is_suspended}.png" 
 					      				alt="Image" height="160" width="160"class="rounded"  >
 							</a>
-						</td>	
+						</td>	-->
 						</tr>
 	                </c:forEach>
                       

@@ -225,7 +225,7 @@
                 Profile
               </a>
               <div class="dropdown-divider"></div>
-             <a class="dropdown-item" href="${pageContext.request.contextPath}/logout">
+             <a class="dropdown-item" href="/schedular/logout">
                 <i class="mdi mdi-logout mr-2 text-primary"></i>
                 Logout
               </a>
@@ -237,7 +237,7 @@
             </a>
           </li>
           <li class="nav-item nav-logout d-none d-lg-block">
-           <a class="nav-link" href="${pageContext.request.contextPath}/logout">
+           <a class="nav-link" href="/schedular/logout">
               <i class="mdi mdi-power"></i>
             </a> 
           </li>
