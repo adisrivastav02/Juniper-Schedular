@@ -1,5 +1,6 @@
 package com.iig.gcp;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	@Value( "${parent.front.micro.services}" )
+	private String parent_micro_services;
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
@@ -22,11 +26,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/", "/login", "/error").permitAll()
 
 		.antMatchers("/admin/*").hasAnyAuthority("ADMIN")
-		/*.antMatchers("/admin/user").hasAnyAuthority("ADMIN")
-		.antMatchers("/admin/usertogrouplink").hasAnyAuthority("ADMIN")*/
-		.antMatchers("/system/*").hasAnyAuthority("ADMIN")
+		.antMatchers("/schedular/*").hasAnyAuthority("ADMIN")
+		.antMatchers("/scheduler/*").hasAnyAuthority("ADMIN")
+		.antMatchers("/schedule/*").hasAnyAuthority("ADMIN")
 
-		.and().exceptionHandling().accessDeniedPage("/accessDenied").and().formLogin();
+		.and().exceptionHandling().accessDeniedPage("/accessDenied").and().formLogin().loginPage("http://"+parent_micro_services);
+		
+		http.logout().logoutUrl("/logout").logoutSuccessUrl("http://"+parent_micro_services).invalidateHttpSession(true);
+		
 
 	}
 

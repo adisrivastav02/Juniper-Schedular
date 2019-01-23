@@ -11,6 +11,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iig.gcp.CustomAuthenticationProvider;
 //import com.iig.gcp.extraction.dto.ConnectionMaster;
 //import com.iig.gcp.extraction.dto.DriveMaster;
 import com.iig.gcp.scheduler.schedulerController.dto.*;
@@ -40,7 +42,7 @@ import com.iig.gcp.scheduler.schedulerService.*;
 public class SchedularController {
 	
 	@Value("${parent.front.micro.services}")
-	private static String parent_ms;
+	private String parent_ms;
 
 	@Autowired
 	SchedularService schedularService;
@@ -94,11 +96,27 @@ public class SchedularController {
 			return new ModelAndView("/index");
 		}
 		
+		@RequestMapping(value = {"/parent"}, method = RequestMethod.GET)
+		public ModelAndView parentHome(ModelMap modelMap,HttpServletRequest request, Authentication auth) throws JSONException {
+			CustomAuthenticationProvider.MyUser m = (CustomAuthenticationProvider.MyUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			JSONObject jsonObject= new JSONObject();
+			jsonObject.put("userId", m.getName());
+			jsonObject.put("project", m.getProject());
+			jsonObject.put("jwt", m.getJwt());
+			//response.getWriter().write(jsonObject.toString());
+			modelMap.addAttribute("jsonObject",jsonObject.toString());
+			return new ModelAndView("redirect:" + "//"+parent_ms+"/fromChild", modelMap);
+			//System.out.println(m.getJwt());
+			//return null;
+			
+		}
+		
 		private void authenticationByJWT(String name, String token) {
 			UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(name, token);
 	        Authentication authenticate = authenticationManager.authenticate(authToken);
 	        SecurityContextHolder.getContext().setAuthentication(authenticate);
 		}
+		
 		
 		/**
 		 * 
@@ -477,9 +495,4 @@ public class SchedularController {
 		return new ModelAndView("/index");
 	}
 	
-	@RequestMapping(value = { "/schedular/logout"}, method = RequestMethod.GET)
-	public ModelAndView logout(ModelMap modelMap,HttpServletRequest request) {
-		request.getSession().invalidate();
-		return new ModelAndView("redirect:" + parent_ms);
-	}
 }
