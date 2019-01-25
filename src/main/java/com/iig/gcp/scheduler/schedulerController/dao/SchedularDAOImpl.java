@@ -63,9 +63,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 		}finally {	
-		ConnectionUtils.closeResultSet(rs);
-		ConnectionUtils.closePrepareStatement(pstm);
-		ConnectionUtils.closeQuietly(conn);
+		conn.close();
 		}
 		
 		return arrFeedId;
@@ -101,9 +99,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 		throw e;
 		}finally {	
-				ConnectionUtils.closeResultSet(rs);
-				ConnectionUtils.closePrepareStatement(pstm);
-				ConnectionUtils.closeQuietly(conn);
+			conn.close();
 		}
 		return scheduledJobs;
 	}
@@ -149,9 +145,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 			}finally {	
-					ConnectionUtils.closeResultSet(rs);
-					ConnectionUtils.closePrepareStatement(pstm);
-					ConnectionUtils.closeQuietly(conn);
+				conn.close();
 			}
 		return scheduledJobs;
 	}
@@ -191,8 +185,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		throw e;
 		
 		}finally {	
-				ConnectionUtils.closePrepareStatement(pstm1);
-				ConnectionUtils.closeQuietly(conn);
+			conn.close();
 		}
 	
 	}
@@ -214,13 +207,12 @@ public class SchedularDAOImpl implements SchedularDAO {
 		while (rs.next()) {
 			arrFeedId.add(rs.getString(1));
 		}
-		ConnectionUtils.closeQuietly(conn);} catch (ClassNotFoundException | SQLException e) {
+		conn.close();
+		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 			
 		}finally {	
-					ConnectionUtils.closeResultSet(rs);
-					ConnectionUtils.closePrepareStatement(pstm);
-					ConnectionUtils.closeQuietly(conn);
+			conn.close();
 		}
 		return arrFeedId;
 	}
@@ -249,9 +241,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		throw e;
 		
 		}finally {	
-				ConnectionUtils.closeResultSet(rs);
-				ConnectionUtils.closePrepareStatement(pstm);
-				ConnectionUtils.closeQuietly(conn);
+			conn.close();
 		}
 		return arrArchiveJobsDTO;
 	}
@@ -284,9 +274,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		throw e;
 		
 		}finally {	
-				ConnectionUtils.closeResultSet(rs);
-				ConnectionUtils.closePrepareStatement(pstm);
-				ConnectionUtils.closeQuietly(conn);
+			conn.close();
 		}
 		return arrArchiveJobsDTO;
 	}
@@ -319,9 +307,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 			
 			}finally {	
-					ConnectionUtils.closeResultSet(rs);
-					ConnectionUtils.closePrepareStatement(pstm);
-					ConnectionUtils.closeQuietly(conn);
+				conn.close();
 			}
 		return archiveJobs;
 	}
@@ -353,9 +339,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		throw e;
 		
 		}finally {	
-				ConnectionUtils.closeResultSet(rs);
-				ConnectionUtils.closePrepareStatement(pstm);
-				ConnectionUtils.closeQuietly(conn);
+			conn.close();
 		}
 		return hsMap;
 	}
@@ -386,9 +370,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 			
 			}finally {	
-					ConnectionUtils.closeResultSet(rs);
-					ConnectionUtils.closePrepareStatement(pstm);
-					ConnectionUtils.closeQuietly(conn);
+				conn.close();
 			}
 		return scheduledJobs;
 	}
@@ -411,9 +393,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		throw e;
 		
 		}finally {	
-				ConnectionUtils.closeResultSet(rs);
-				ConnectionUtils.closePrepareStatement(pstm);
-				ConnectionUtils.closeQuietly(conn);
+			conn.close();
 		}
 		return arrFeedId;
 	}
@@ -454,9 +434,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 			
 			}finally {	
-					ConnectionUtils.closeResultSet(rs);
-					ConnectionUtils.closePrepareStatement(pstm);
-					ConnectionUtils.closeQuietly(conn);
+				conn.close();
 			}
 		return scheduledJobs;
 	}
@@ -636,7 +614,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 				return "Failure";
 			
 			}finally {	
-					ConnectionUtils.closeQuietly(conn);
+				conn.close();
 			}
 	}
 
@@ -661,7 +639,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			return (e.toString());
 
 		}finally {	
-			ConnectionUtils.closeQuietly(conn);
+			conn.close();
 		}
 	}
 	
@@ -688,7 +666,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			return (e.toString());
 
 		}finally {	
-			ConnectionUtils.closeQuietly(conn);
+			conn.close();
 		}
 	}
 
@@ -715,7 +693,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			e.printStackTrace();
 			return "Failure";
 		}finally {	
-			ConnectionUtils.closeQuietly(conn);
+			conn.close();
 		}
 		
 	}
@@ -736,7 +714,7 @@ public String unSuspendJobFromMaster(@Valid String feedId) throws Exception {
 		e.printStackTrace();
 		return "Failure";
 	}finally {	
-		ConnectionUtils.closeQuietly(conn);
+		conn.close();
 	}
 	
 }

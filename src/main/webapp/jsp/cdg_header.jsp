@@ -206,17 +206,17 @@
               <div class="nav-profile-img">
               
            <c:choose>
-			    <c:when test="${user_id=='admin'}"><img src="${pageContext.request.contextPath}/assets/img/faces/jiten.jpg" alt="image"></c:when>
-			    <c:when test="${user_id=='vaibhav'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
-			    <c:when test="${user_id=='abhishek'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
-			    <c:when test="${user_id=='test'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
+			    <c:when test="${user_name=='admin'}"><img src="${pageContext.request.contextPath}/assets/img/faces/jiten.jpg" alt="image"></c:when>
+			    <c:when test="${user_name=='vaibhav'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
+			    <c:when test="${user_name=='abhishek'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
+			    <c:when test="${user_name=='test'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
 			    <c:otherwise><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:otherwise>
 			</c:choose>
 			 
                 <span class="availability-status online"></span>             
               </div>
               <div class="nav-profile-text">
-                <p class="mb-1 text-black">${user_id}</p>
+                <p class="mb-1 text-black">${user_name}</p>
               </div>
             </a>
             <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
@@ -256,16 +256,16 @@
             <a href="#" class="nav-link">
               <div class="nav-profile-image">
                 <c:choose>
-			   <c:when test="${user_id=='admin'}"><img src="${pageContext.request.contextPath}/assets/img/faces/jiten.jpg" alt="image"></c:when>
-			    <c:when test="${user_id=='vaibhav'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
-			    <c:when test="${user_id=='abhishek'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
-			    <c:when test="${user_id=='test'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
+			   <c:when test="${user_name=='admin'}"><img src="${pageContext.request.contextPath}/assets/img/faces/jiten.jpg" alt="image"></c:when>
+			    <c:when test="${user_name=='vaibhav'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
+			    <c:when test="${user_name=='abhishek'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
+			    <c:when test="${user_name=='test'}"><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:when>
 			    <c:otherwise><img src="${pageContext.request.contextPath}/assets/img/faces/face.png" alt="image"></c:otherwise>
 			</c:choose>
                 <span class="login-status online"></span> <!--change to offline or busy as needed-->              
               </div>
               <div class="nav-profile-text d-flex flex-column">
-                <span class="font-weight-bold mb-2">${user_id}</span>
+                <span class="font-weight-bold mb-2">${user_name}</span>
                 <span class="text-secondary text-small">Application User</span>
               </div>
               <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>

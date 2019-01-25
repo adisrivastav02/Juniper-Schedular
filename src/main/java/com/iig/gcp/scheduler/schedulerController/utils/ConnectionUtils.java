@@ -9,8 +9,10 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
  
 @Component
+@Transactional
 public class ConnectionUtils {
  
 	@Autowired
@@ -22,15 +24,14 @@ public class ConnectionUtils {
     	return dataSource.getConnection();
     }
     
- 
-     
+   /*  
     public static void closeQuietly(Connection conn) {
         try {
         	conn.commit();
             conn.close();
         } catch (Exception e) {
         }
-    }
+    }*/
  
     public static void rollbackQuietly(Connection conn) {
         try {
