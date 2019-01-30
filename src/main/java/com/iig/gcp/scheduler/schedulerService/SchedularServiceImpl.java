@@ -8,9 +8,16 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.iig.gcp.scheduler.constants.OracleConstants;
 import com.iig.gcp.scheduler.schedulerController.dao.*;
 import com.iig.gcp.scheduler.schedulerController.dto.*;
 
@@ -130,4 +137,57 @@ public class SchedularServiceImpl implements SchedularService{
 	public String unSuspendJobFromMaster(@Valid String feedId) throws Exception {
 		return schedularDAO.unSuspendJobFromMaster(feedId);
 	}
+	
+	@Override
+	public ArrayList<BatchDetailsDTO> getBatchDetails() throws Exception {
+		return schedularDAO.getBatchDetails();
+	}
+	
+	@Override
+	public ArrayList<TaskSequenceDTO> getJobDetails(String batch_id,String project_id) throws Exception {
+		return schedularDAO.getJobDetails(batch_id,project_id);
+	}
+	
+	@Override
+	public ArrayList<String> getKafkaTopic()  {
+		return schedularDAO.getKafkaTopic();
+	}
+	
+	@Override
+	public ArrayList<String> getBatchJobs(String batch_id,String project_id)  {
+		return schedularDAO.getBatchJobs(batch_id,project_id);
+	}
+	
+	@Override
+	public BatchTableDetailsDTO extractBatchDetails(String batch_id, String project_id) throws Exception{
+		return schedularDAO.extractBatchDetails(batch_id,project_id);
+	}
+	
+
+	@Override
+	public AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id){
+		return schedularDAO.extractBatchJobDetails(batch_id,project_id,job_id);
+	}
+	
+	
+	@Override
+	public String invokeRest(String json, String url) throws UnsupportedOperationException, Exception {
+		String resp = null;
+		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+		HttpPost postRequest = new HttpPost(OracleConstants.ADHOC_TASK_COMPUTE_URL + url);
+		System.out.println(OracleConstants.ADHOC_TASK_COMPUTE_URL + url);
+		postRequest.setHeader("Content-Type", "application/json");
+		StringEntity input = new StringEntity(json);
+		postRequest.setEntity(input);
+		HttpResponse response = httpClient.execute(postRequest);
+		String response_string = EntityUtils.toString(response.getEntity(), "UTF-8");
+		if (response.getStatusLine().getStatusCode() != 200) {
+			resp = "Error" + response_string;
+			throw new Exception("Error" + response_string);
+		} else {
+			resp = response_string;
+		}
+		return resp;
+	}
+	
 }

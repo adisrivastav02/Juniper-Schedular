@@ -4,6 +4,7 @@
 
 package com.iig.gcp.scheduler.schedulerController;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -442,43 +443,7 @@ public class SchedularController {
 	 * ModelAndView("schedular/viewScheduledjobs"); }
 	 */
 	
-	@RequestMapping(value = { "/scheduler/AddTask" }, method = RequestMethod.GET)
-	public ModelAndView AddTask(
-			 ModelMap modelMap) {
-		try {
-			String message="Reached the add task controller block";
-		} catch (Exception e) {
-			//modelMap.addAttribute("errorStatus", e.getMessage());
-
-		}
-		return new ModelAndView("schedular/AddTask");
-	}
 	
-	
-	@RequestMapping(value = { "/scheduler/AddBatch" }, method = RequestMethod.GET)
-	public ModelAndView AddBatch1(@Valid ModelMap modelMap) {
-		try {
-			String message="Reached the add batch controller block Post";
-		} catch (Exception e) {
-
-		}
-		return new ModelAndView("schedular/AddBatch");
-	}
-	
-	@RequestMapping(value = { "/scheduler/ListTask" }, method = RequestMethod.GET)
-	public ModelAndView ListTask(
-			 ModelMap modelMap) {
-		try {
-			String message="Reached the l task controller block";
-			//System.out.println(message);
-			//String message = schedularService.killCurrentJob(feedId, jobId, batchDate);
-			//modelMap.addAttribute("successString", message);
-		} catch (Exception e) {
-			//modelMap.addAttribute("errorStatus", e.getMessage());
-
-		}
-		return new ModelAndView("schedular/ListTask");
-	}
 
 /*	@RequestMapping(value = { "/"}, method = RequestMethod.GET)
 	public ModelAndView onBoardProject(@Valid @ModelAttribute("jsonObject") String jsonObject,ModelMap modelMap,HttpServletRequest request) {
@@ -494,5 +459,291 @@ public class SchedularController {
 	public ModelAndView error(ModelMap modelMap,HttpServletRequest request) {
 		return new ModelAndView("/index");
 	}
+	
+	@RequestMapping(value = { "/scheduler/AddTask" }, method = RequestMethod.GET)
+	public ModelAndView AddTask(
+			 ModelMap modelMap,	HttpServletRequest request) {
+		try {
+			String message="Reached the add task controller block";
+			System.out.println(message);
+			ArrayList<BatchDetailsDTO> batch_val = schedularService.getBatchDetails();
+			modelMap.addAttribute("batch_val", batch_val);
+			ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
+			modelMap.addAttribute("kafka_topic", kafka_topic);
+			modelMap.addAttribute("usernm", request.getSession().getAttribute("user_name"));
+			modelMap.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
+		} catch (Exception e) {
+			//modelMap.addAttribute("errorStatus", e.getMessage());
+
+		}
+		return new ModelAndView("schedular/AddTask");
+	}
+	
+	
+	@RequestMapping(value = "/scheduler/AddTaskSave", method = RequestMethod.POST)
+	public ModelAndView AddTaskSave(@Valid @ModelAttribute("x") String x, @ModelAttribute("src_val") String src_val, @ModelAttribute("button_type") String button_type, ModelMap model,
+			HttpServletRequest request,ModelMap modelMap) throws UnsupportedOperationException, Exception {
+		String resp = null;
+		System.out.println("json is "+x);
+		System.out.println("src_val is "+src_val);		
+		System.out.println("button_type is"+button_type);
+		try {
+			if(button_type.equalsIgnoreCase("create")) {
+				 resp = schedularService.invokeRest(x, "addScheduleData");
+			}else {
+				 resp = schedularService.invokeRest(x, "editScheduleData");
+			}
+			
+			String status0[] = resp.toString().split(":");
+			System.out.println(status0[0] + " value " + status0[1] + " value3: " + status0[2]);
+			String status1[] = status0[1].split(",");
+			String status = status1[0].replaceAll("\'", "").trim();
+			String message0 = status0[2];
+			String message = message0.replaceAll("[\'}]", "").trim();
+			String final_message = status + ": " + message;
+			System.out.println("final: " + final_message);
+			System.out.println("message is "+message);
+			if(resp.toLowerCase().contains("success") && button_type.equalsIgnoreCase("create")) {
+				modelMap.addAttribute("successString", "Success :Task added successfully");
+			}else if(resp.toLowerCase().contains("success") && button_type.equalsIgnoreCase("edit")) {
+				modelMap.addAttribute("successString", "Success :Task updated successfully");
+			}else{
+				if (final_message.contains("ORA-00001")){
+					modelMap.addAttribute("errorString","Failed :All the job names passed must be unique");
+				}else {
+				modelMap.addAttribute("errorString",final_message);
+				}
+			}
+			
+		} catch (Exception e) {
+			modelMap.addAttribute("errorString","Exception occurred");
+
+		}
+		String project= (String) request.getSession().getAttribute("project_name");
+		System.out.println("project is "+project);
+		//model.addAttribute("src_val", src_val);
+		modelMap.addAttribute("usernm", request.getSession().getAttribute("user_name"));
+		model.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
+		System.out.println(x);
+		ArrayList<BatchDetailsDTO> batch_val = schedularService.getBatchDetails();
+		modelMap.addAttribute("batch_val", batch_val);
+		ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
+		modelMap.addAttribute("kafka_topic", kafka_topic);
+		return new ModelAndView("schedular/AddTask");
+	}
+	
+	
+	@RequestMapping(value = { "/scheduler/AddBatch" }, method = RequestMethod.GET)
+	public ModelAndView AddBatch1(@Valid ModelMap model,HttpServletRequest request) {
+		try {
+			String message="Reached the add batch controller block Post";
+			System.out.println(message);
+			model.addAttribute("usernm", request.getSession().getAttribute("user_name"));
+			ArrayList<BatchDetailsDTO> batch_val = schedularService.getBatchDetails();
+			model.addAttribute("batch_val", batch_val);
+			model.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
+			ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
+			model.addAttribute("kafka_topic", kafka_topic);
+			//String message = schedularService.killCurrentJob(feedId, jobId, batchDate);
+			//modelMap.addAttribute("successString", message);
+		} catch (Exception e) {
+			//modelMap.addAttribute("errorStatus", e.getMessage());
+
+		}
+		return new ModelAndView("schedular/AddBatch");
+	}
+	
+	/*@RequestMapping(value = { "/scheduler/AddBatch" }, method = RequestMethod.POST)
+	public ModelAndView AddBatchPost(@Valid ModelMap modelMap,HttpServletRequest request,ModelMap model) {
+		try {
+			String message="Reached the add batch controller block Post";
+			System.out.println(message);
+			ArrayList<BatchDetailsDTO> batch_val = schedularService.getBatchDetails();
+			modelMap.addAttribute("batch_val", batch_val);
+			//String message = schedularService.killCurrentJob(feedId, jobId, batchDate);
+			//modelMap.addAttribute("successString", message);
+		} catch (Exception e) {
+			//modelMap.addAttribute("errorStatus", e.getMessage());
+
+		}
+		
+		UserAccount u = (UserAccount) request.getSession().getAttribute("user");
+		model.addAttribute("usernm", u.getUser_id());
+		model.addAttribute("project", (String) request.getSession().getAttribute("project"));
+		return new ModelAndView("schedular/AddBatch");
+	}*/
+	
+	@RequestMapping(value = "/scheduler/AddBatchClick", method = RequestMethod.POST)
+	public ModelAndView AddBatchClick(@Valid @ModelAttribute("x") String x, @ModelAttribute("src_val") String src_val, @ModelAttribute("button_type") String button_type, ModelMap model,
+			HttpServletRequest request,ModelMap modelMap) throws UnsupportedOperationException, Exception {
+		//String resp = null;
+		String message="";
+		System.out.println("json is "+x);
+		System.out.println("src_val is "+src_val);		
+		System.out.println("button_type is"+button_type);
+
+		try {
+			if(button_type.equalsIgnoreCase("add")) {
+				message = schedularService.invokeRest(x, "saveBatchDetails");
+				if(message.toLowerCase().contains("success")) {
+					modelMap.addAttribute("successString", "Batch added successfully");
+				}else {
+					modelMap.addAttribute("errorString","Batch name already exits,pass a unique name");
+				}
+			}else {
+				message = schedularService.invokeRest(x, "editBatchDetails");
+				if(message.toLowerCase().contains("success")) {
+					modelMap.addAttribute("successString", "Batch updated successfully");
+				}else {
+					modelMap.addAttribute("errorString",message);
+				}
+			}
+			
+		} catch (Exception e) {
+			modelMap.addAttribute("errorString","Exception occurred");
+
+		}
+		String project= (String) request.getSession().getAttribute("project");
+		System.out.println("project is "+project);
+		//model.addAttribute("src_val", src_val);
+		modelMap.addAttribute("usernm", request.getSession().getAttribute("user_name"));
+		model.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
+		ArrayList<BatchDetailsDTO> batch_val = schedularService.getBatchDetails();
+		model.addAttribute("batch_val", batch_val);
+		ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
+		model.addAttribute("kafka_topic", kafka_topic);
+		System.out.println(x);
+		return new ModelAndView("schedular/AddBatch");
+	}
+	
+	@RequestMapping(value = { "/scheduler/CreateSequence" }, method = RequestMethod.GET)
+	public ModelAndView CreateSequence(@Valid ModelMap modelMap,HttpServletRequest request) {
+		try {
+			String message="Reached the CreateSequence controller block Post";
+			System.out.println(message);
+			modelMap.addAttribute("usernm", request.getSession().getAttribute("user_name"));
+			modelMap.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
+			ArrayList<BatchDetailsDTO> batch_val = schedularService.getBatchDetails();
+			modelMap.addAttribute("batch_val", batch_val);
+			//String message = schedularService.killCurrentJob(feedId, jobId, batchDate);
+			//modelMap.addAttribute("successString", message);
+		} catch (Exception e) {
+			//modelMap.addAttribute("errorStatus", e.getMessage());
+
+		}
+		return new ModelAndView("schedular/CreateSequence");
+	}
+	
+
+	@RequestMapping(value="/scheduler/CreateSequence1",method=RequestMethod.POST)
+	public ModelAndView CreateSequence1(@Valid @ModelAttribute("batchid")String batchid,@Valid @ModelAttribute("project_id")String project_id,ModelMap model) throws ClassNotFoundException, SQLException 
+	{
+		String message="Reached the CreateSequence1 controller block Post";
+		System.out.println(message);
+		ArrayList<TaskSequenceDTO> arr;
+		try {
+			arr = schedularService.getJobDetails(batchid,project_id);
+			model.addAttribute("daglistdto", arr);	
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//ArrayList<TaskSequenceDTO> arr=schedularService.getSequence(composer_id,dag.substring(1,dag.length()-1));		
+			
+		return new ModelAndView("schedular/CreateSequence1");
+	}
+	
+	@RequestMapping(value="/scheduler/CreateSequenceSubmit",method=RequestMethod.POST)
+	public ModelAndView CreateSequenceSubmit(@Valid @ModelAttribute("x")String x, ModelMap modelMap,HttpServletRequest request) throws UnsupportedOperationException, Exception {
+		    System.out.println("sequence"+x);
+		String resp = schedularService.invokeRest(x, "sequenceSubmit");
+		String status0[] = resp.toString().split(":");
+		System.out.println(status0[0] + " value " + status0[1] + " value3: " + status0[2]);
+		String status1[] = status0[1].split(",");
+		String status = status1[0].replaceAll("\'", "").trim().replaceAll("\"", "");
+		String message0 = status0[2];
+		String message = message0.replaceAll("[\'}]", "").trim().replaceAll("\"", "");
+		String final_message = status + ": " + message;
+		System.out.println("final: " + final_message);
+		System.out.println("message is "+message);
+		if(resp.toLowerCase().contains("success")) {
+			modelMap.addAttribute("successString",final_message);
+		}else {
+			modelMap.addAttribute("errorString",final_message);
+		}
+		modelMap.addAttribute("usernm", request.getSession().getAttribute("user_name"));
+		modelMap.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
+		ArrayList<BatchDetailsDTO> batch_val = schedularService.getBatchDetails();
+		modelMap.addAttribute("batch_val", batch_val);
+	
+		return new ModelAndView("schedular/CreateSequence");
+	}
+	
+	@RequestMapping(value = "scheduler/BatchEdit", method = RequestMethod.POST)
+	public ModelAndView BatchEdit(@Valid @ModelAttribute("batch_id") String batch_id,@Valid @ModelAttribute("project_id") String project_id,ModelMap model, HttpServletRequest request)
+			throws UnsupportedOperationException, Exception {
+		String adhoc_flag="";
+		String regular_flag="";
+		String event_flag="";
+		
+		System.out.println("Reached BatchEdit block "+batch_id);
+		BatchTableDetailsDTO batchArr=schedularService.extractBatchDetails(batch_id,project_id);
+		System.out.println("batchArr.getSCHEDULE_TYPE() is "+batchArr.getSCHEDULE_TYPE());
+		System.out.println("batchArr.Argument 4() is "+batchArr.getArgument_4());
+		if(batchArr.getSCHEDULE_TYPE().contains("R") && batchArr.getDAILY_FLAG()!=null) {
+			adhoc_flag="The batch is regular type and scheduled everyday at "+batchArr.getJOB_SCHEDULE_TIME();
+		}else if(batchArr.getSCHEDULE_TYPE().contains("R") && batchArr.getWEEKLY_FLAG()!=null) {
+			adhoc_flag="The batch is regular type and scheduled everyday at "+batchArr.getJOB_SCHEDULE_TIME()+" on every "+batchArr.getWEEK_RUN_DAY();
+		}else if(batchArr.getSCHEDULE_TYPE().contains("R") && batchArr.getMONTHLY_FLAG()!=null) {
+			adhoc_flag="The batch is regular type and scheduled everyday at "+batchArr.getJOB_SCHEDULE_TIME()+" on every "+batchArr.getMONTH_RUN_DAY()+" of "+batchArr.getMONTH_RUN_VAL();
+		}else if (batchArr.getSCHEDULE_TYPE().contains("A") && batchArr.getArgument_4()==null) {
+			adhoc_flag="The batch is adhoc type and scheduled everyday at 00:00";
+		}else if (batchArr.getSCHEDULE_TYPE().contains("F") && batchArr.getArgument_4()!=null) {
+			adhoc_flag="The batch is event based type and scheduled everyday at 00:00 with filewatcher as "+batchArr.getArgument_4();
+		}else if (batchArr.getSCHEDULE_TYPE().contains("K") && batchArr.getArgument_4()!=null) {
+			adhoc_flag="The batch is event based type and scheduled everyday at 00:00 with Kafka topic as "+batchArr.getArgument_4();
+		}else if (batchArr.getSCHEDULE_TYPE().contains("A") && batchArr.getArgument_4()!=null) {
+			adhoc_flag="The batch is event based type and scheduled everyday at 00:00 with API value as "+batchArr.getArgument_4();
+		}else {
+			adhoc_flag="The batch is event based type and scheduled everyday at 00:00";
+		}
+		model.addAttribute("adhoc_flag",adhoc_flag);
+		model.addAttribute("regular_flag",regular_flag);
+		model.addAttribute("event_flag",event_flag);
+		model.addAttribute("batchArr",batchArr);
+		ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
+		model.addAttribute("kafka_topic", kafka_topic);
+		//ArrayList<DataDetailBean> arrddb = es.getData(src_sys_id, src_val, conn_val.getConnection_id(), schema_name, (String) request.getSession().getAttribute("project"),db_name);
+		//model.addAttribute("schem", schema_name);
+		///model.addAttribute("arrddb", arrddb);
+		//UserAccount u = (UserAccount) request.getSession().getAttribute("user");
+	//	model.addAttribute("usernm", u.getUser_id());
+	//	model.addAttribute("project", (String) request.getSession().getAttribute("project"));
+		return new ModelAndView("schedular/BatchEdit");
+	}
+	
+	@RequestMapping(value = "scheduler/LoadBatchJobs", method = RequestMethod.POST)
+	public ModelAndView LoadBatchJobs(@Valid @ModelAttribute("batch") String batch_id,@Valid @ModelAttribute("project") String project_id,ModelMap model, HttpServletRequest request)
+			throws UnsupportedOperationException, Exception {
+		System.out.println("Reached inside the load batch edit block");
+		ArrayList<String> job_id1 = schedularService.getBatchJobs(batch_id,project_id);
+		model.addAttribute("job_id1", job_id1);
+		return new ModelAndView("schedular/LoadBatchJobs");
+	}
+	
+	@RequestMapping(value = "scheduler/EditJob", method = RequestMethod.POST)
+	public ModelAndView EditJob(@Valid @ModelAttribute("batch") String batch_id,@Valid @ModelAttribute("project") String project_id,@Valid @ModelAttribute("job_id") String job_id,ModelMap model, HttpServletRequest request)
+			throws UnsupportedOperationException, Exception {
+		System.out.println("Reached inside the edit job block");
+		System.out.println("project id is "+project_id);
+		System.out.println("batch id is "+batch_id);
+		System.out.println("job id is"+job_id);
+		AdhocJobDTO jobArr=schedularService.extractBatchJobDetails(batch_id,project_id,job_id);
+		model.addAttribute("jobArr",jobArr);
+		//ArrayList<String> job_val = schedularService.getBatchJobs(batch_id,project_id);
+		//model.addAttribute("job_val", job_val);
+		return new ModelAndView("schedular/EditJob");
+	}
+
 	
 }

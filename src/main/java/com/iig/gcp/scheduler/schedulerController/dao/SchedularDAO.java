@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.validation.Valid;
-
 import com.iig.gcp.scheduler.schedulerController.dto.*;
 
 public interface SchedularDAO {
@@ -36,4 +35,12 @@ public interface SchedularDAO {
 	String moveJobFromMasterToCurrentJob(String feedId) throws ClassNotFoundException, SQLException, Exception;
 	String runScheduleJob(@Valid String feedId, String jobId, String batchDate) throws Exception;
 	String killCurrentJob(@Valid String feedId, String jobId, String batchDate) throws Exception;
+	
+	//Adhoc Task
+	AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id);
+	ArrayList<BatchDetailsDTO> getBatchDetails() throws Exception;
+	ArrayList<TaskSequenceDTO> getJobDetails(String batch_id,String project_id) throws Exception;
+	ArrayList<String> getKafkaTopic();
+	ArrayList<String> getBatchJobs(String batch_id,String project_id);
+	BatchTableDetailsDTO extractBatchDetails(String batch_id, String project_id) throws SQLException;
 }

@@ -45,6 +45,21 @@ $(document).ready(function() {
 					<div class="card-body">
 						
 								  <div class="row text-center text-lg-left">
+								  <div class="thumbnail col-lg-3 col-md-4 col-xs-6">
+								      	<a class="d-block mb-4 h-100" href="/scheduler/AddBatch">
+								      		<img class="img-fluid img-thumbnail" src="${pageContext.request.contextPath}/assets/img/Batch.png" >
+								      	</a>
+								    </div>
+								    <div class="thumbnail col-lg-3 col-md-4 col-xs-6">
+								      	<a class="d-block mb-4 h-100" href="/scheduler/AddTask">
+								      		<img class="img-fluid img-thumbnail" src="${pageContext.request.contextPath}/assets/img/Task.png" >
+								      	</a>
+								    </div>
+								    <div class="thumbnail col-lg-3 col-md-4 col-xs-6">
+								      	<a class="d-block mb-4 h-100" href="/scheduler/CreateSequence">
+								      		<img class="img-fluid img-thumbnail" src="${pageContext.request.contextPath}/assets/img/Sequence.png" >
+								      	</a>
+								    </div>
 									 <div class="thumbnail col-lg-3 col-md-4 col-xs-6">
 								      	<a class="d-block mb-4 h-100" href="/scheduler/viewAllJobs">
 								      		<img class="img-fluid img-thumbnail" src="${pageContext.request.contextPath}/assets/img/MasterFeedDetails.png" >

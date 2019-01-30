@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.validation.Valid;
-
 import com.iig.gcp.scheduler.schedulerController.dto.*;
 
 public interface SchedularService {
@@ -21,6 +20,14 @@ public interface SchedularService {
 	//String stopScheduleJob(@Valid String feedId, String jobId, String batchDate) throws Exception;
 	String killCurrentJob(@Valid String feedId, String jobId, String batchDate) throws Exception;	
 
+	
+	String invokeRest(String json,String url) throws UnsupportedOperationException, Exception ;
+	ArrayList<BatchDetailsDTO> getBatchDetails() throws Exception;
+	BatchTableDetailsDTO extractBatchDetails(String batch_id,String project_id) throws Exception;
+	ArrayList<TaskSequenceDTO> getJobDetails(String batch_id,String project_id) throws Exception;
+	ArrayList<String> getKafkaTopic();
+	ArrayList<String> getBatchJobs(String batch_id,String project_id);
+	AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id);
 	
 	//Archive table
 	ArrayList<String> getFeedIdList() throws Exception;

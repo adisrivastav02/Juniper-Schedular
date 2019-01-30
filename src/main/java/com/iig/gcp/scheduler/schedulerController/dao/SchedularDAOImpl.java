@@ -18,7 +18,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-
 import com.iig.gcp.scheduler.schedulerController.dto.*;
 import com.iig.gcp.scheduler.schedulerController.utils.*;
 
@@ -718,4 +717,215 @@ public String unSuspendJobFromMaster(@Valid String feedId) throws Exception {
 	}
 	
 }
+
+@Override
+public ArrayList<BatchDetailsDTO> getBatchDetails() {
+	Connection connection=null;
+	BatchDetailsDTO conn = null;
+	PreparedStatement pstm =null;
+	ArrayList<BatchDetailsDTO> arrBatchDetails = new ArrayList<BatchDetailsDTO>();
+	try {
+		connection = ConnectionUtils.getConnection();
+		pstm = connection.prepareStatement(" select BATCH_UNIQUE_NAME from JUNIPER_SCH_BATCH_DETAILS");
+		
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			conn = new BatchDetailsDTO();
+			conn.setBATCH_UNIQUE_NAME(rs.getString(1));
+			arrBatchDetails.add(conn);
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}finally {
+		try {
+			pstm.close();
+			connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	return arrBatchDetails;
+	
+}
+
+@Override
+public ArrayList<TaskSequenceDTO> getJobDetails(String batch_id,String project_id) {
+	Connection connection=null;
+	TaskSequenceDTO conn = null;
+	PreparedStatement pstm = null;
+	ArrayList<TaskSequenceDTO> arrBatchDetails = new ArrayList<TaskSequenceDTO>();
+	try {
+		connection = ConnectionUtils.getConnection();
+		String query="select distinct job_name,BATCH_ID from JUNIPER_SCH_ADHOC_JOB_DETAIL where BATCH_ID='"+batch_id+"'"
+				+" and project_id=(select PROJECT_SEQUENCE from JUNIPER_PROJECT_MASTER where PROJECT_ID='"+project_id+"')";
+		pstm = connection.prepareStatement(query);
+		
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			conn = new TaskSequenceDTO();
+			conn.setJOB_NAME(rs.getString(1));
+			conn.setBATCH_ID(rs.getString(2));		
+			arrBatchDetails.add(conn);
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}finally {
+		try {
+			pstm.close();
+			connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	return arrBatchDetails;
+	
+}
+
+
+@Override
+public ArrayList<String> getKafkaTopic()
+{
+	ArrayList<String> arr = new ArrayList<String>();
+	Connection connection=null;
+	PreparedStatement pstm=null;
+	try {
+		connection = ConnectionUtils.getConnection();
+		pstm = connection.prepareStatement("SELECT distinct kafka_topic FROM  juniper_ext_kafka_topic_master");
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			arr.add(rs.getString(1));
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}finally {
+		try {
+			pstm.close();
+			connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	return arr;
+}
+
+@Override
+public ArrayList<String> getBatchJobs(String batch_id,String project_id)
+{
+	ArrayList<String> arr = new ArrayList<String>();
+	String selectQuery="";
+	Connection connection=null;
+	try {
+		connection = ConnectionUtils.getConnection();
+		selectQuery="select JOB_NAME from JUNIPER_SCH_ADHOC_JOB_DETAIL where BATCH_ID='"+batch_id+"' and PROJECT_ID=(select project_sequence from JUNIPER_PROJECT_MASTER where PROJECT_ID='"+project_id+"')";
+		System.out.println(selectQuery);
+		PreparedStatement pstm = connection.prepareStatement(selectQuery);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			arr.add(rs.getString(1));
+		}
+		pstm.close();
+	} catch (Exception e) {
+		e.printStackTrace();
+	}finally{
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	return arr;
+}
+
+@Override
+public BatchTableDetailsDTO extractBatchDetails(String batch_id, String project_id) throws SQLException{
+	BatchTableDetailsDTO arr = new BatchTableDetailsDTO();
+	Connection connection=null;
+	PreparedStatement pstm=null;
+	try {
+		connection = ConnectionUtils.getConnection();
+		String selectQuery="select BATCH_ID,BATCH_UNIQUE_NAME,BATCH_DESCRIPTION,DAILY_FLAG,WEEKLY_FLAG,MONTHLY_FLAG,YEARLY_FLAG,JOB_SCHEDULE_TIME,"
+				+"ARGUMENT_4,WEEK_RUN_DAY,MONTH_RUN_VAL,MONTH_RUN_DAY,PROJECT_ID,WEEK_NUM_MONTH,SCHEDULE_TYPE"
+				+" from JUNIPER_SCH_BATCH_DETAILS where BATCH_UNIQUE_NAME='"+batch_id+"' and PROJECT_ID="
+				+"(select project_sequence from JUNIPER_PROJECT_MASTER where PROJECT_ID='"+project_id+"')";
+		pstm = connection.prepareStatement(selectQuery);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			arr.setBATCH_NAME(rs.getString("BATCH_UNIQUE_NAME"));
+			arr.setBATCH_DESC(rs.getString("BATCH_DESCRIPTION"));
+			arr.setDAILY_FLAG(rs.getString("DAILY_FLAG"));
+			arr.setWEEKLY_FLAG(rs.getString("WEEKLY_FLAG"));
+			arr.setMONTH_RUN_DAY(rs.getString("MONTHLY_FLAG"));
+			arr.setYEARLY_FLAG(rs.getString("YEARLY_FLAG"));
+			arr.setJOB_SCHEDULE_TIME(rs.getString("JOB_SCHEDULE_TIME"));
+			arr.setArgument_4(rs.getString("ARGUMENT_4"));
+			arr.setWEEK_NUM_MONTH(rs.getString("WEEK_NUM_MONTH"));
+			arr.setMONTH_RUN_DAY(rs.getString("MONTH_RUN_DAY"));
+			arr.setMONTH_RUN_VAL(rs.getString("MONTH_RUN_VAL"));
+			arr.setWEEK_RUN_DAY(rs.getString("WEEK_RUN_DAY"));
+			arr.setSCHEDULE_TYPE(rs.getString("SCHEDULE_TYPE"));
+			arr.setProject_sequence(rs.getInt("PROJECT_ID"));
+		}
+	}catch (Exception e) {
+		e.printStackTrace();
+	}finally {
+		try {
+			pstm.close();
+			connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	connection.close();
+	return arr;
+}
+
+@Override
+public AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id) {
+	AdhocJobDTO arr = new AdhocJobDTO();
+	Connection connection=null;
+	PreparedStatement pstm =null;
+	try {
+		connection = ConnectionUtils.getConnection();
+		String selectQuery="select COMMAND,COMMAND_TYPE,ARGUMENT_1,ARGUMENT_2,ARGUMENT_3"
+				+" from JUNIPER_SCH_ADHOC_JOB_DETAIL where BATCH_ID='"+batch_id+"' "
+				+" and JOB_NAME='"+job_id+"'"	+ "and PROJECT_ID="
+				+"(select project_sequence from JUNIPER_PROJECT_MASTER where PROJECT_ID='"+project_id+"')";
+		pstm = connection.prepareStatement(selectQuery);
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			arr.setJob_name(job_id);
+			arr.setCommand(rs.getString("COMMAND"));
+			arr.setCommand_type(rs.getString("COMMAND_TYPE"));
+			arr.setArgument_1(rs.getString("ARGUMENT_1"));
+			arr.setArgument_2(rs.getString("ARGUMENT_2"));
+			arr.setArgument_3(rs.getString("ARGUMENT_3"));
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}finally {
+		try {
+			pstm.close();
+			connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	return arr;
+}
+
+
+
 }

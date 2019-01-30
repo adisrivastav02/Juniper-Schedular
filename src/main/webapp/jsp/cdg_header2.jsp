@@ -186,9 +186,110 @@
   font-size:0.8em;
   font-weight:bold;
 }
+.grid-container {
+	display: grid;
+	height: 100%;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+		1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+		1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+		1fr 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+		1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+		1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+		1fr 1fr 1fr;
+	grid-gap: 0.5px 0.5px;
+}
+
+@media all and (-ms-high-contrast: none) {
+	.grid-container {
+		display: -ms-grid;
+		-ms-grid-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+			1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+			1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+			1fr 1fr 1fr;
+		-ms-grid-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+			1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+			1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
+			1fr 1fr;
+	}
+}
 </style>
+<script>
+	function allowDrop(ev) {
+		ev.preventDefault();
+	}
+	function drag(ev) {
+		ev.dataTransfer.setData("text", ev.target.id);
+	}
+	function drop(ev,el) {
+		ev.preventDefault();
+		var data = ev.dataTransfer.getData("text");
+		el.appendChild(document.getElementById(data));
+	}
+	function load() {
+		var x = document.getElementsByClassName("grid-container")[0];
+		var y = "";
+		var z1 = "";
+		var z2 = "";
+		for (var i = 0; i < 10; i++) {
+			for (var j = 0; j < 500; j = j + 10) {
+				y = y
+						+ "<div id='"
+						+ (i + j)
+						+ "' name='"
+						+ (i + j)
+						+ "' class='form-control customgrid' ondrop='drop(event,this)' ondragover='allowDrop(event)' style='min-width:100px;height:50px;padding:0px;'></div>";
+			}
+		}
+		for (var k = 1; k <= 50; k++) {
+			z1 = z1
+					+ "<div style='text-align:center;min-width:100px;height:25px;font-weight:bold;margin-top:20px;'>"
+					+ k + "</div>";
+			z2 = z2
+					+ "<div style='text-align:center;min-width:100px;height:25px;font-weight:bold;'>"
+					+ k + "</div>";
+		}
+		x.innerHTML = z1 + y + z2;
+	}
+	function get_seq() {
+		var csv = "", divid = "", curr = "";
+		var arr = [ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+				"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+				"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+				"", "", "" ]
+		for (var i = 0; i < 500; i++) {
+			divid = document.getElementsByClassName("customgrid")[i];
+			if (divid.innerHTML != "") {
+				eleid = divid.innerHTML.split('id="')[1].split('"')[0];
+				arr[Math.trunc(divid.id / 10)] += eleid + ",";
+			}
+		}
+		for (var j = arr.length - 1; j >= 0; j--) {
+			if (arr[j] === "") {
+				arr.splice(j, 1);
+			} else {
+				arr[j] = arr[j].slice(0, -1);
+			}
+		}
+		for (var k = 0; k < arr.length; k++) {
+			if (k == 0) {
+				csv += arr[k];
+			} else {
+				var temp1 = arr[k].split(",");
+				var temp2 = curr.split(",");
+				for (var x = 0; x < temp1.length; x++) {
+					for (var y = 0; y < temp2.length; y++) {
+						csv += "|" + temp1[x] + "," + temp2[y];
+					}
+				}
+			}
+			curr = arr[k];
+		}
+		document.getElementById("sequence").value = csv;
+	}
+</script>
 </head>
-<body>
+<body onload="load();">
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
     <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
