@@ -62,6 +62,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 		}finally {	
+		pstm.close();
 		conn.close();
 		}
 		
@@ -98,6 +99,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 		throw e;
 		}finally {	
+			pstm.close();
 			conn.close();
 		}
 		return scheduledJobs;
@@ -144,6 +146,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 			}finally {	
+				pstm.close();
 				conn.close();
 			}
 		return scheduledJobs;
@@ -184,6 +187,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		throw e;
 		
 		}finally {	
+			pstm1.close();
 			conn.close();
 		}
 	
@@ -211,6 +215,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 			
 		}finally {	
+			pstm.close();
 			conn.close();
 		}
 		return arrFeedId;
@@ -240,6 +245,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		throw e;
 		
 		}finally {	
+			pstm.close();
 			conn.close();
 		}
 		return arrArchiveJobsDTO;
@@ -273,6 +279,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		throw e;
 		
 		}finally {	
+			pstm.close();
 			conn.close();
 		}
 		return arrArchiveJobsDTO;
@@ -306,6 +313,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 			
 			}finally {	
+				pstm.close();
 				conn.close();
 			}
 		return archiveJobs;
@@ -328,7 +336,6 @@ public class SchedularDAOImpl implements SchedularDAO {
 		pstm = conn.prepareStatement(query);
 		rs = pstm.executeQuery();
 		while (rs.next()) {
-			//System.out.println("in DB K" + String.valueOf(rs.getInt(1)));
 			arrKey.add(String.valueOf(rs.getInt(1)));
 			arrValue.add(rs.getString(2));
 		}
@@ -338,6 +345,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		throw e;
 		
 		}finally {	
+			pstm.close();
 			conn.close();
 		}
 		return hsMap;
@@ -369,6 +377,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 			
 			}finally {	
+				pstm.close();
 				conn.close();
 			}
 		return scheduledJobs;
@@ -392,6 +401,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		throw e;
 		
 		}finally {	
+			pstm.close();
 			conn.close();
 		}
 		return arrFeedId;
@@ -433,6 +443,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 			
 			}finally {	
+				pstm.close();
 				conn.close();
 			}
 		return scheduledJobs;
@@ -583,11 +594,11 @@ public class SchedularDAOImpl implements SchedularDAO {
 	@Override
 	public String moveJobFromMasterToCurrentJob(String feedId)throws Exception {
 		Connection conn = null;
-		PreparedStatement pstm,pstm1 =null;
+		PreparedStatement pstm = null,pstm1 =null,pstmd1=null;
 		try {
 			conn = ConnectionUtils.getConnection();
 			String deleteDependentQuery = "DELETE FROM juniper_sch_dependent where job_id like '" + feedId + "%' and to_char(batch_date,'YYYYMMDD')=TO_CHAR(SYSDATE,'YYYYMMDD')";
-			PreparedStatement pstmd1 = conn.prepareStatement(deleteDependentQuery);
+			pstmd1 = conn.prepareStatement(deleteDependentQuery);
 			pstmd1.executeUpdate();			
 			
 			String deleteCurrentFeedLoggerQuery = "DELETE FROM juniper_sch_current_job_detail WHERE batch_id = ? and to_char(batch_date,'YYYYMMDD')=TO_CHAR(SYSDATE,'YYYYMMDD')";
@@ -613,6 +624,9 @@ public class SchedularDAOImpl implements SchedularDAO {
 				return "Failure";
 			
 			}finally {	
+				pstmd1.close();
+				pstm.close();
+				pstm1.close();
 				conn.close();
 			}
 	}
@@ -634,10 +648,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 		return (rs + "Job run with FeedID: " + feedId + " and JobID: " + jobId + " on Batch Date: " + batchDate);
 		}
 		catch (Exception e) {
-			//System.out.println(e.toString());
 			return (e.toString());
 
 		}finally {	
+			pstm.close();
 			conn.close();
 		}
 	}
@@ -661,10 +675,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 		return (rs + "Killed job with FeedID: " + feedId + " and JobID: " + jobId + " on Batch Date: " + batchDate);
 		}
 		catch (Exception e) {
-			//System.out.println(e.toString());
 			return (e.toString());
 
 		}finally {	
+			pstm.close();
 			conn.close();
 		}
 	}
@@ -692,6 +706,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			e.printStackTrace();
 			return "Failure";
 		}finally {	
+			pstm.close();
 			conn.close();
 		}
 		
@@ -713,6 +728,7 @@ public String unSuspendJobFromMaster(@Valid String feedId) throws Exception {
 		e.printStackTrace();
 		return "Failure";
 	}finally {	
+		pstm.close();
 		conn.close();
 	}
 	
@@ -825,7 +841,6 @@ public ArrayList<String> getBatchJobs(String batch_id,String project_id)
 	try {
 		connection = ConnectionUtils.getConnection();
 		selectQuery="select JOB_NAME from JUNIPER_SCH_ADHOC_JOB_DETAIL where BATCH_ID='"+batch_id+"' and PROJECT_ID=(select project_sequence from JUNIPER_PROJECT_MASTER where PROJECT_ID='"+project_id+"')";
-		System.out.println(selectQuery);
 		PreparedStatement pstm = connection.prepareStatement(selectQuery);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
