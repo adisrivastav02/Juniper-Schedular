@@ -50,6 +50,7 @@ class DataSourceConfig {
 	
 	@Value("${master.key.path}")
 	private String master_key_path;
+	
 
 	@Bean
 	public DataSource primaryDataSource() throws Exception {

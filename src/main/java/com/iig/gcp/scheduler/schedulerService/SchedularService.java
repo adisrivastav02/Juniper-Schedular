@@ -17,7 +17,6 @@ public interface SchedularService {
 	List<DailyJobsDTO> filterCurrentJobs(String status, String feedId) throws Exception;
 	HashMap<String, ArrayList<String>> allCurrentJobsGroupByFeedId() throws Exception;
 	String runScheduleJob(@Valid String feedId, String jobId, String batchDate) throws Exception;
-	//String stopScheduleJob(@Valid String feedId, String jobId, String batchDate) throws Exception;
 	String killCurrentJob(@Valid String feedId, String jobId, String batchDate) throws Exception;	
 
 	
@@ -25,9 +24,9 @@ public interface SchedularService {
 	ArrayList<BatchDetailsDTO> getBatchDetails() throws Exception;
 	BatchTableDetailsDTO extractBatchDetails(String batch_id,String project_id) throws Exception;
 	ArrayList<TaskSequenceDTO> getJobDetails(String batch_id,String project_id) throws Exception;
-	ArrayList<String> getKafkaTopic();
-	ArrayList<String> getBatchJobs(String batch_id,String project_id);
-	AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id);
+	ArrayList<String> getKafkaTopic() throws Exception;
+	ArrayList<String> getBatchJobs(String batch_id,String project_id) throws Exception;;
+	AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id) throws Exception;
 	
 	//Archive table
 	ArrayList<String> getFeedIdList() throws Exception;

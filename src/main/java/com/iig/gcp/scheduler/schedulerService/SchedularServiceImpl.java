@@ -1,7 +1,5 @@
 package com.iig.gcp.scheduler.schedulerService;
 
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,14 +13,22 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.iig.gcp.scheduler.constants.OracleConstants;
-import com.iig.gcp.scheduler.schedulerController.dao.*;
-import com.iig.gcp.scheduler.schedulerController.dto.*;
+import com.iig.gcp.scheduler.schedulerController.dao.SchedularDAO;
+import com.iig.gcp.scheduler.schedulerController.dto.AdhocJobDTO;
+import com.iig.gcp.scheduler.schedulerController.dto.ArchiveJobsDTO;
+import com.iig.gcp.scheduler.schedulerController.dto.BatchDetailsDTO;
+import com.iig.gcp.scheduler.schedulerController.dto.BatchTableDetailsDTO;
+import com.iig.gcp.scheduler.schedulerController.dto.DailyJobsDTO;
+import com.iig.gcp.scheduler.schedulerController.dto.MasterJobsDTO;
+import com.iig.gcp.scheduler.schedulerController.dto.TaskSequenceDTO;
 
 @Service
 public class SchedularServiceImpl implements SchedularService{
+	
+	
 	
 	@Autowired
 	SchedularDAO schedularDAO;
@@ -33,6 +39,9 @@ public class SchedularServiceImpl implements SchedularService{
 		// TODO Auto-generated method stub
 		return schedularDAO.getFeedFromMaster(project);
 	}
+	
+	@Value("${adhoc.task.compute.url}")
+	private String ADHOC_TASK_COMPUTE_URL;
 	
 	/**
 	 * 
@@ -149,13 +158,21 @@ public class SchedularServiceImpl implements SchedularService{
 	}
 	
 	@Override
-	public ArrayList<String> getKafkaTopic()  {
-		return schedularDAO.getKafkaTopic();
+	public ArrayList<String> getKafkaTopic()  throws Exception{
+		try {
+			return schedularDAO.getKafkaTopic();
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 	
 	@Override
-	public ArrayList<String> getBatchJobs(String batch_id,String project_id)  {
-		return schedularDAO.getBatchJobs(batch_id,project_id);
+	public ArrayList<String> getBatchJobs(String batch_id,String project_id) throws Exception  {
+		try {
+			return schedularDAO.getBatchJobs(batch_id,project_id);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 	
 	@Override
@@ -165,8 +182,12 @@ public class SchedularServiceImpl implements SchedularService{
 	
 
 	@Override
-	public AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id){
-		return schedularDAO.extractBatchJobDetails(batch_id,project_id,job_id);
+	public AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id) throws Exception{
+		try {
+			return schedularDAO.extractBatchJobDetails(batch_id,project_id,job_id);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 	
 	
@@ -174,8 +195,8 @@ public class SchedularServiceImpl implements SchedularService{
 	public String invokeRest(String json, String url) throws UnsupportedOperationException, Exception {
 		String resp = null;
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-		HttpPost postRequest = new HttpPost(OracleConstants.ADHOC_TASK_COMPUTE_URL + url);
-		System.out.println(OracleConstants.ADHOC_TASK_COMPUTE_URL + url);
+		HttpPost postRequest = new HttpPost(ADHOC_TASK_COMPUTE_URL + url);
+		System.out.println(ADHOC_TASK_COMPUTE_URL + url);
 		postRequest.setHeader("Content-Type", "application/json");
 		StringEntity input = new StringEntity(json);
 		postRequest.setEntity(input);

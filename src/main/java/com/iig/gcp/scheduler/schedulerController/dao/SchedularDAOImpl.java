@@ -4,9 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +14,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import com.iig.gcp.scheduler.schedulerController.dto.*;
 import com.iig.gcp.scheduler.schedulerController.utils.*;
@@ -30,18 +27,8 @@ public class SchedularDAOImpl implements SchedularDAO {
 
 	@Autowired
 	private ConnectionUtils ConnectionUtils;
-	//DateFormat batchDate = new SimpleDateFormat("yyyy-MM-dd");
-	//DateFormat lastUpdateTs = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-	//DateFormat jobScheduleTime = new SimpleDateFormat("hh:mm:ss");
 	DateFormat dateFormat2 = new SimpleDateFormat("hh:mm:ss");
 	Date date = new Date();
-
-	private static String SPACE = " ";
-	private static String COMMA = ",";
-	private static String SEMICOLON = ";";
-	private static String QUOTE = "\'";
-	private static String DATABASE_NAME = "iigs_scheduler_db";
-	private static String FEED_MASTER_TABLE = "JUNIPER_SCH_MASTER_JOB_DETAIL";
 	private static String FEED_CURRENT_TABLE = "JUNIPER_SCH_CURRENT_JOB_DETAIL";
 
 	// Master Table
@@ -162,21 +149,6 @@ public class SchedularDAOImpl implements SchedularDAO {
 		PreparedStatement pstm1 =null;
 		try {
 		conn = ConnectionUtils.getConnection();
-		/*PreparedStatement pstm;
-		MasterJobsDTO masterJobDTO =orderJobFromMaster(feedId);
-		if(masterJobDTO!=null) {
-			jobId = masterJobDTO.getJob_id();
-			int masterJobSeq=masterJobDTO.getJob_sequence();
-			
-			for(int i=1;i<=10;i++) {
-				String predessor="predessor_job_id_"+i;
-				String updatePredecessorsQuery= "update JUNIPER_SCH_MASTER_JOB_DETAIL  set "+predessor+"=' ' where "+predessor+"="+QUOTE+jobId+QUOTE+" and job_sequence="+QUOTE+masterJobSeq+QUOTE;
-				pstm = conn.prepareStatement(updatePredecessorsQuery);
-				pstm.executeUpdate();
-			}
-		}
-		*/
-		
 		String query = "delete from JUNIPER_SCH_MASTER_JOB_DETAIL where batch_id=?";
 		pstm1 = conn.prepareStatement(query);
 		pstm1.setString(1, feedId);	
@@ -210,7 +182,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		while (rs.next()) {
 			arrFeedId.add(rs.getString(1));
 		}
-		conn.close();
+		//conn.close();
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 			
@@ -450,147 +422,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 	}
 
 
-//	@Override
-//	public MasterJobsDTO orderJobFromMaster(String feedId, String jobId)
-//			throws ClassNotFoundException, SQLException, ParseException {
-//		MasterJobsDTO masterJobDTO = null;
-//		Connection conn = ConnectionUtils.getConnection();
-//		String query = "select project_id,feed_id,'A','A',job_id,job_name,batch_id,pre_processing,post_processing,"
-//				+ "command,argument_1,argument_2,argument_3,argument_4,argument_5,"
-//				+ "daily_flag,monthly_flag,job_schedule_time,"
-//				+ "predessor_job_id_1,predessor_job_id_2,predessor_job_id_3,predessor_job_id_4,"
-//				+ "predessor_job_id_5,predessor_job_id_6,predessor_job_id_7,predessor_job_id_8,predessor_job_id_9,predessor_job_id_10,"
-//				+ "weekly_flag,week_run_day,month_run_day,month_run_val,is_dependent_job,command_type,yearly_flag,"
-//				+ "week_num_month,job_sequence,is_suspended from " + FEED_MASTER_TABLE + " where batch_id=? and job_id=?";
-//		PreparedStatement pstm = conn.prepareStatement(query);
-//		pstm.setString(1, feedId);
-//		pstm.setString(2, jobId);
-//		ResultSet rs = pstm.executeQuery();
-//		while (rs.next()) {
-//			masterJobDTO = new MasterJobsDTO();
-//
-//			masterJobDTO.setProject_id(rs.getString(1));
-//			masterJobDTO.setFeed_id(rs.getString(2));
-//			masterJobDTO.setSource_emid(rs.getString(3));
-//			masterJobDTO.setTarget_emid(rs.getString(4));
-//			// current_date
-//			masterJobDTO.setJob_id(rs.getString(5));
-//			masterJobDTO.setJob_name(rs.getString(6));
-//			masterJobDTO.setBatch_id(rs.getString(7));
-//
-//			masterJobDTO.setPre_processing(rs.getString(8));
-//			masterJobDTO.setPost_processing(rs.getString(9));
-//			masterJobDTO.setCommand(rs.getString(10));
-//			masterJobDTO.setArgument_1(rs.getString(11));
-//			masterJobDTO.setArgument_2(rs.getString(12));
-//			masterJobDTO.setArgument_3(rs.getString(13));
-//			masterJobDTO.setArgument_4(rs.getString(14));
-//			masterJobDTO.setArgument_5(rs.getString(15));
-//
-//			if (rs.getString(16) != null && !rs.getString(16).equals("")) {
-//				char dailyFlag = rs.getString(16).charAt(0);
-//				masterJobDTO.setDaily_flag(dailyFlag);
-//			} else {
-//				masterJobDTO.setDaily_flag(' ');
-//			}
-//
-//			if (rs.getString(17) != null && !rs.getString(17).equals("")) {
-//				char monthlyFlag = rs.getString(17).charAt(0);
-//				masterJobDTO.setMonthly_flag(monthlyFlag);
-//			} else {
-//				masterJobDTO.setMonthly_flag(' ');
-//			}
-//
-//			masterJobDTO.setJob_schedule_time(rs.getString(18));
-//
-//			// status
-//
-//			String predessor_job_id_1 = rs.getString(19);
-//			masterJobDTO.setPredessor_job_id_1(predessor_job_id_1);
-//
-//			String predessor_job_id_2 = rs.getString(20);
-//			masterJobDTO.setPredessor_job_id_2(predessor_job_id_2);
-//
-//			String predessor_job_id_3 = rs.getString(21);
-//			masterJobDTO.setPredessor_job_id_3(predessor_job_id_3);
-//
-//			String predessor_job_id_4 = rs.getString(22);
-//			masterJobDTO.setPredessor_job_id_4(predessor_job_id_4);
-//
-//			String predessor_job_id_5 = rs.getString(23);
-//			masterJobDTO.setPredessor_job_id_5(predessor_job_id_5);
-//
-//			String predessor_job_id_6 = rs.getString(24);
-//			masterJobDTO.setPredessor_job_id_6(predessor_job_id_6);
-//
-//			String predessor_job_id_7 = rs.getString(25);
-//			masterJobDTO.setPredessor_job_id_7(predessor_job_id_7);
-//
-//			String predessor_job_id_8 = rs.getString(26);
-//			masterJobDTO.setPredessor_job_id_8(predessor_job_id_8);
-//
-//			String predessor_job_id_9 = rs.getString(27);
-//			masterJobDTO.setPredessor_job_id_9(predessor_job_id_9);
-//
-//			String predessor_job_id_10 = rs.getString(28);
-//			masterJobDTO.setPredessor_job_id_10(predessor_job_id_10);
-//
-//			if (rs.getString(29) != null && !rs.getString(29).equals("")) {
-//				char weeklyFlag = rs.getString(29).charAt(0);
-//				masterJobDTO.setWeekly_flag(weeklyFlag);
-//			} else {
-//				masterJobDTO.setWeekly_flag(' ');
-//			}
-//
-//			String weekRunDay = rs.getString(30);
-//			masterJobDTO.setWeek_run_day(weekRunDay);
-//
-//			String monthlyRunDay = rs.getString(31);
-//			masterJobDTO.setMonth_run_day(monthlyRunDay);
-//
-//			String monthlyRunVal = rs.getString(32);
-//			masterJobDTO.setMonth_run_val(monthlyRunVal);
-// 
-//			if(rs.getString(33)!=null) {
-//				masterJobDTO.setIs_dependent_job(rs.getString(33));
-//			}
-//			else {
-//				masterJobDTO.setIs_dependent_job("");
-//			}
-//			
-//
-//			String commandType = rs.getString(34);
-//			masterJobDTO.setCommand_type(commandType);
-//
-//			// timestamp
-//
-//			if (rs.getString(35) != null && !rs.getString(35).equals("")) {
-//				char yearlyFlag = rs.getString(35).charAt(0);
-//				masterJobDTO.setYearly_flag(yearlyFlag);
-//			} else {
-//				masterJobDTO.setYearly_flag(' ');
-//			}
-//
-//			if (rs.getString(36) != null && !rs.getString(36).equals("")) {
-//				String weekNumMonth = rs.getString(36);
-//				int i = Integer.parseInt(weekNumMonth);
-//				masterJobDTO.setWeek_num_month(i);
-//			}
-//			
-//			masterJobDTO.setJob_sequence(rs.getInt(37));
-//			
-//			masterJobDTO.setIs_suspended(rs.getString(38));
-//
-//		}
-//		ConnectionUtils.closeQuietly(conn);
-//		return masterJobDTO;
-//	}
 
-	/* 
-	 * This method move job from master table to current table
-	 * (non-Javadoc)
-	 * @see com.iig.gcp.scheduler.dao.SchedularDAO#moveJobFromMasterToCurrentJob(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public String moveJobFromMasterToCurrentJob(String feedId)throws Exception {
 		Connection conn = null;
@@ -621,8 +453,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			
 			return "Success";
 			} catch (ClassNotFoundException | SQLException e) {
-				return "Failure";
-			
+				throw e;
 			}finally {	
 				pstmd1.close();
 				pstm.close();
@@ -648,8 +479,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		return (rs + "Job run with FeedID: " + feedId + " and JobID: " + jobId + " on Batch Date: " + batchDate);
 		}
 		catch (Exception e) {
-			return (e.toString());
-
+			throw e;
 		}finally {	
 			pstm.close();
 			conn.close();
@@ -675,8 +505,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		return (rs + "Killed job with FeedID: " + feedId + " and JobID: " + jobId + " on Batch Date: " + batchDate);
 		}
 		catch (Exception e) {
-			return (e.toString());
-
+			throw e;
 		}finally {	
 			pstm.close();
 			conn.close();
@@ -703,8 +532,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 			rs=pstm.executeUpdate();
 			return (rs + " Jobs Suspended with FeedID: " + feedId);
 		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-			return "Failure";
+			throw e;
 		}finally {	
 			pstm.close();
 			conn.close();
@@ -725,8 +553,7 @@ public String unSuspendJobFromMaster(@Valid String feedId) throws Exception {
 		rs=pstm.executeUpdate();
 		return (rs + " Jobs Unsuspended with FeedID: " + feedId );
 	} catch (ClassNotFoundException | SQLException e) {
-		e.printStackTrace();
-		return "Failure";
+		throw e;
 	}finally {	
 		pstm.close();
 		conn.close();
@@ -735,7 +562,7 @@ public String unSuspendJobFromMaster(@Valid String feedId) throws Exception {
 }
 
 @Override
-public ArrayList<BatchDetailsDTO> getBatchDetails() {
+public ArrayList<BatchDetailsDTO> getBatchDetails() throws Exception{
 	Connection connection=null;
 	BatchDetailsDTO conn = null;
 	PreparedStatement pstm =null;
@@ -751,14 +578,13 @@ public ArrayList<BatchDetailsDTO> getBatchDetails() {
 			arrBatchDetails.add(conn);
 		}
 	} catch (Exception e) {
-		e.printStackTrace();
+		throw e;
 	}finally {
 		try {
 			pstm.close();
 			connection.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
 		
 	}
@@ -768,14 +594,14 @@ public ArrayList<BatchDetailsDTO> getBatchDetails() {
 }
 
 @Override
-public ArrayList<TaskSequenceDTO> getJobDetails(String batch_id,String project_id) {
+public ArrayList<TaskSequenceDTO> getJobDetails(String batch_id,String project_id) throws Exception {
 	Connection connection=null;
 	TaskSequenceDTO conn = null;
 	PreparedStatement pstm = null;
 	ArrayList<TaskSequenceDTO> arrBatchDetails = new ArrayList<TaskSequenceDTO>();
 	try {
 		connection = ConnectionUtils.getConnection();
-		String query="select distinct job_name,BATCH_ID from JUNIPER_SCH_ADHOC_JOB_DETAIL where BATCH_ID='"+batch_id+"'"
+		String query="select substr(job_id,INSTR(job_id,'_',3,2)+1),BATCH_ID from JUNIPER_SCH_ADHOC_JOB_DETAIL where BATCH_ID='"+batch_id+"'"
 				+" and project_id=(select PROJECT_SEQUENCE from JUNIPER_PROJECT_MASTER where PROJECT_ID='"+project_id+"')";
 		pstm = connection.prepareStatement(query);
 		
@@ -787,14 +613,13 @@ public ArrayList<TaskSequenceDTO> getJobDetails(String batch_id,String project_i
 			arrBatchDetails.add(conn);
 		}
 	} catch (Exception e) {
-		e.printStackTrace();
+		throw e;
 	}finally {
 		try {
 			pstm.close();
 			connection.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
 		
 	}
@@ -805,7 +630,7 @@ public ArrayList<TaskSequenceDTO> getJobDetails(String batch_id,String project_i
 
 
 @Override
-public ArrayList<String> getKafkaTopic()
+public ArrayList<String> getKafkaTopic() throws Exception
 {
 	ArrayList<String> arr = new ArrayList<String>();
 	Connection connection=null;
@@ -818,14 +643,13 @@ public ArrayList<String> getKafkaTopic()
 			arr.add(rs.getString(1));
 		}
 	} catch (Exception e) {
-		e.printStackTrace();
+		throw e;
 	}finally {
 		try {
 			pstm.close();
 			connection.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
 		
 	}
@@ -833,14 +657,14 @@ public ArrayList<String> getKafkaTopic()
 }
 
 @Override
-public ArrayList<String> getBatchJobs(String batch_id,String project_id)
+public ArrayList<String> getBatchJobs(String batch_id,String project_id) throws Exception
 {
 	ArrayList<String> arr = new ArrayList<String>();
 	String selectQuery="";
 	Connection connection=null;
 	try {
 		connection = ConnectionUtils.getConnection();
-		selectQuery="select JOB_NAME from JUNIPER_SCH_ADHOC_JOB_DETAIL where BATCH_ID='"+batch_id+"' and PROJECT_ID=(select project_sequence from JUNIPER_PROJECT_MASTER where PROJECT_ID='"+project_id+"')";
+		selectQuery="select substr(job_id,INSTR(job_id,'_',3,2)+1) from JUNIPER_SCH_ADHOC_JOB_DETAIL where BATCH_ID='"+batch_id+"' and PROJECT_ID=(select project_sequence from JUNIPER_PROJECT_MASTER where PROJECT_ID='"+project_id+"')";
 		PreparedStatement pstm = connection.prepareStatement(selectQuery);
 		ResultSet rs = pstm.executeQuery();
 		while (rs.next()) {
@@ -848,20 +672,19 @@ public ArrayList<String> getBatchJobs(String batch_id,String project_id)
 		}
 		pstm.close();
 	} catch (Exception e) {
-		e.printStackTrace();
+		throw e;
 	}finally{
 		try {
 			connection.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
 	}
 	return arr;
 }
 
 @Override
-public BatchTableDetailsDTO extractBatchDetails(String batch_id, String project_id) throws SQLException{
+public BatchTableDetailsDTO extractBatchDetails(String batch_id, String project_id) throws Exception{
 	BatchTableDetailsDTO arr = new BatchTableDetailsDTO();
 	Connection connection=null;
 	PreparedStatement pstm=null;
@@ -890,14 +713,13 @@ public BatchTableDetailsDTO extractBatchDetails(String batch_id, String project_
 			arr.setProject_sequence(rs.getInt("PROJECT_ID"));
 		}
 	}catch (Exception e) {
-		e.printStackTrace();
+		throw e;
 	}finally {
 		try {
 			pstm.close();
 			connection.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
 		
 	}
@@ -906,7 +728,7 @@ public BatchTableDetailsDTO extractBatchDetails(String batch_id, String project_
 }
 
 @Override
-public AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id) {
+public AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id) throws Exception{
 	AdhocJobDTO arr = new AdhocJobDTO();
 	Connection connection=null;
 	PreparedStatement pstm =null;
@@ -914,7 +736,7 @@ public AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,Str
 		connection = ConnectionUtils.getConnection();
 		String selectQuery="select COMMAND,COMMAND_TYPE,ARGUMENT_1,ARGUMENT_2,ARGUMENT_3"
 				+" from JUNIPER_SCH_ADHOC_JOB_DETAIL where BATCH_ID='"+batch_id+"' "
-				+" and JOB_NAME='"+job_id+"'"	+ "and PROJECT_ID="
+				+" and substr(job_id,INSTR(job_id,'_',3,2)+1)='"+job_id+"'"	+ "and PROJECT_ID="
 				+"(select project_sequence from JUNIPER_PROJECT_MASTER where PROJECT_ID='"+project_id+"')";
 		pstm = connection.prepareStatement(selectQuery);
 		ResultSet rs = pstm.executeQuery();
@@ -927,14 +749,13 @@ public AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,Str
 			arr.setArgument_3(rs.getString("ARGUMENT_3"));
 		}
 	} catch (Exception e) {
-		e.printStackTrace();
+		throw e;
 	}finally {
 		try {
 			pstm.close();
 			connection.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
 		
 	}

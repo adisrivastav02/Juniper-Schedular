@@ -15,7 +15,6 @@ public interface SchedularDAO {
 	 ArrayList<String> getFeedFromMaster(String project) throws Exception;
 	 List<MasterJobsDTO> allLoadJobs(String project) throws Exception;
 	 List<MasterJobsDTO> typAndBatchLoadJobs(String strFrequencyType, String strBatchId) throws Exception;
-	 //MasterJobsDTO orderJobFromMaster(String feedId, String jobId) throws ClassNotFoundException, SQLException, ParseException;
 	 String deleteJobFromMaster(String feedId) throws Exception;
 	 String suspendJobFromMaster(String feedId) throws ClassNotFoundException, SQLException, Exception;
 	 String unSuspendJobFromMaster(@Valid String feedId) throws Exception;
@@ -37,10 +36,10 @@ public interface SchedularDAO {
 	String killCurrentJob(@Valid String feedId, String jobId, String batchDate) throws Exception;
 	
 	//Adhoc Task
-	AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id);
+	AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id) throws Exception;
 	ArrayList<BatchDetailsDTO> getBatchDetails() throws Exception;
 	ArrayList<TaskSequenceDTO> getJobDetails(String batch_id,String project_id) throws Exception;
-	ArrayList<String> getKafkaTopic();
-	ArrayList<String> getBatchJobs(String batch_id,String project_id);
-	BatchTableDetailsDTO extractBatchDetails(String batch_id, String project_id) throws SQLException;
+	ArrayList<String> getKafkaTopic() throws Exception;
+	ArrayList<String> getBatchJobs(String batch_id,String project_id) throws Exception;
+	BatchTableDetailsDTO extractBatchDetails(String batch_id, String project_id) throws Exception;
 }
