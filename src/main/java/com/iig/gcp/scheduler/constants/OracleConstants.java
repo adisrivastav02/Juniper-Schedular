@@ -15,6 +15,5 @@ public class OracleConstants {
 	public final static String QUOTE = "'";
 	public final static String COMMA = ",";
 	public final static String SCHEDULETABLE = "JUNIPER_SCH_MASTER_JOB_DETAIL";
-	public final static String ADHOC_TASK_COMPUTE_URL="http://35.185.47.113:8193/";
 
 }

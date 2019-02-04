@@ -32,7 +32,7 @@
 										</div>
 										<div class="col-sm-4">
 											<label>Argument_3 </label> <input type="text"
-												class="form-control" id="argument_31" name="argument31"
+												class="form-control" id="argument_31" name="argument_31"
 												value="${jobArr.argument_3}">
 										</div>		
 										</div>	

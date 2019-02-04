@@ -16,12 +16,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class EncryptionUtil {
 	
-	
-	private static String master_key_path;
 	@Value("${master.key.path}")
-	public void setMasterKeyPath(String value) {
-		this.master_key_path=value;
-	}
+	private static String master_key_path;
+	
+	
 	
 	public static SecretKey decodeKeyFromString(String keyStr) {
 		/* Decodes a Base64 encoded String into a byte array */

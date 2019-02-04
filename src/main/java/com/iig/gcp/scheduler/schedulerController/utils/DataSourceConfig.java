@@ -50,6 +50,7 @@ class DataSourceConfig {
 	
 	@Value("${master.key.path}")
 	private String master_key_path;
+	
 
 	@Bean
 	public DataSource primaryDataSource() throws Exception {
@@ -59,6 +60,7 @@ class DataSourceConfig {
 		String orcl_decoded_pwd=EncryptionUtil.decryptText(base_pwd, EncryptionUtil.decodeKeyFromString(content));
 		
 		HikariConfig jdbcConfig = new HikariConfig();
+		jdbcConfig.setLeakDetectionThreshold(10000);
         jdbcConfig.setPoolName(poolName);
         jdbcConfig.setMaximumPoolSize(maximumPoolSize);
         jdbcConfig.setMinimumIdle(minimumIdle);
