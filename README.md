@@ -1,2 +1,2 @@
-# juniper-schedular
-Juniper micro-service for Schedular module
+# juniper-scheduler
+Juniper micro-service for Scheduler module
