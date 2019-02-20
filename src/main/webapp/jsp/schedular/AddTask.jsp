@@ -52,6 +52,7 @@ function togg(ids, idx) {
 }
 
 function jsonconstruct(id) {
+	alert("Reached the jsonconstruct");
 	var data = {};
 	var errors = [];
 	var i;

@@ -33,7 +33,7 @@ $("#error-alert").hide();
 	function jsonconstruct(val) {
 		var errors = [];
 		var batch_name;
-		if(val=="create"){
+		if(val=="add"){
 			batch_name = document.getElementById("batch_name").value;
 		}else if (val == "edit"){
 			batch_name = document.getElementById("batch_val2").value;
@@ -60,7 +60,7 @@ $("#error-alert").hide();
 				+ JSON.stringify(data) + '}}';
 		document.getElementById('x').value = x;
 		//console.log(x);
-		alert(x);
+		//alert(x);
 		document.getElementById('AddBatch').submit();
 	}
 	function looper(id, start, end) {
@@ -80,7 +80,8 @@ $("#error-alert").hide();
 	
 	function funccheck(val) {
 		if (val == 'create') {
-					window.location.reload();
+					//window.location.reload();
+			window.location.href = "${pageContext.request.contextPath}/scheduler/AddBatch";
 		} else {
 			document.getElementById('connfunc').style.display = "block";
 			document.getElementById('cud').innerHTML="";
@@ -207,7 +208,6 @@ $("#error-alert").hide();
 		}
 		
 		function testfunc(val){
-			alert(val);
 			var batch_id = val;
 			var project_id =document.getElementById('project').value;
 			$.post('${pageContext.request.contextPath}/scheduler/BatchEdit', {

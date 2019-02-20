@@ -16,7 +16,7 @@
 										</div>
 										<div class="col-sm-12">
 												<label>Script Location</label> <input type="text"
-													class="form-control" id="script1" name="script1" readonly>
+													class="form-control" id="script1" name="script1" value="${script1}" readonly>
 											</div>
 											<div class="col-sm-12">
 											<label>Command *</label> <input type="text"

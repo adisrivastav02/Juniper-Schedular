@@ -441,6 +441,7 @@ public class SchedularController {
 			@ModelAttribute("button_type") String button_type, ModelMap model, HttpServletRequest request,
 			ModelMap modelMap) throws UnsupportedOperationException, Exception {
 		String resp = null;
+		System.out.println("x is "+x);
 		try {
 			if (button_type.equalsIgnoreCase("create")) {
 				resp = schedularService.invokeRest(x, "addScheduleData");
@@ -571,8 +572,7 @@ public class SchedularController {
 			throws ClassNotFoundException, SQLException {
 
 		try {
-			String xtest = "A,0|B,10|C,11|D,20";
-
+			String xtest = "";
 			xtest = schedularService.getBatchSequence(batchid, project_id, null, 0);
 			System.out.println("xtest is " + xtest);
 			model.addAttribute("xtest", xtest);
@@ -664,6 +664,9 @@ public class SchedularController {
 			@Valid @ModelAttribute("project") String project_id, @Valid @ModelAttribute("job_id") String job_id,
 			ModelMap model, HttpServletRequest request) throws UnsupportedOperationException, Exception {
 		AdhocJobDTO jobArr = schedularService.extractBatchJobDetails(batch_id, project_id, job_id);
+		String script1=jobArr.getCommand().substring(1,jobArr.getCommand().lastIndexOf('/')+1);
+		System.out.println("script1 is "+script1);
+		model.addAttribute("script1", script1);
 		model.addAttribute("jobArr", jobArr);
 		return new ModelAndView("schedular/EditJob");
 	}
