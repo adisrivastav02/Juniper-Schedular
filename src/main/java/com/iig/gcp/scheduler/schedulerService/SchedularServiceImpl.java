@@ -26,23 +26,21 @@ import com.iig.gcp.scheduler.schedulerController.dto.MasterJobsDTO;
 import com.iig.gcp.scheduler.schedulerController.dto.TaskSequenceDTO;
 
 @Service
-public class SchedularServiceImpl implements SchedularService{
-	
-	
-	
+public class SchedularServiceImpl implements SchedularService {
+
 	@Autowired
 	SchedularDAO schedularDAO;
-	
-	//Master Table
+
+	// Master Table
 	@Override
 	public ArrayList<String> getFeedFromMaster(String project) throws Exception {
 		// TODO Auto-generated method stub
 		return schedularDAO.getFeedFromMaster(project);
 	}
-	
+
 	@Value("${adhoc.task.compute.url}")
 	private String ADHOC_TASK_COMPUTE_URL;
-	
+
 	/**
 	 * 
 	 */
@@ -51,15 +49,13 @@ public class SchedularServiceImpl implements SchedularService{
 		return schedularDAO.allLoadJobs(project);
 	}
 
-	
 	@Override
 	public List<MasterJobsDTO> typeLoadJobs(String frequency, String batchId) throws Exception {
 		// TODO Auto-generated method stub
 		return schedularDAO.typAndBatchLoadJobs(frequency, batchId);
 	}
-	
-	
-	//Archive Table;
+
+	// Archive Table;
 	@Override
 	public ArrayList<String> getFeedIdList() throws Exception {
 		// TODO Auto-generated method stub
@@ -79,12 +75,12 @@ public class SchedularServiceImpl implements SchedularService{
 	}
 
 	@Override
-	public List<ArchiveJobsDTO> getRunStats(@Valid String job_id,@Valid String feed_id) throws Exception {
+	public List<ArchiveJobsDTO> getRunStats(@Valid String job_id, @Valid String feed_id) throws Exception {
 		// TODO Auto-generated method stub
-		return schedularDAO.getRunStats(job_id,feed_id);
+		return schedularDAO.getRunStats(job_id, feed_id);
 	}
-	
-	//Current Table;
+
+	// Current Table;
 	@Override
 	public List<DailyJobsDTO> allCurrentJobs(String project) throws Exception {
 		// TODO Auto-generated method stub
@@ -118,13 +114,13 @@ public class SchedularServiceImpl implements SchedularService{
 	@Override
 	public String moveJobFromMasterToCurrentJob(String feedId) throws Exception {
 		return schedularDAO.moveJobFromMasterToCurrentJob(feedId);
-		
+
 	}
-	
+
 	@Override
 	public String deleteJobFromMaster(String feedId) throws Exception {
 		return schedularDAO.deleteJobFromMaster(feedId);
-		
+
 	}
 
 	@Override
@@ -133,7 +129,7 @@ public class SchedularServiceImpl implements SchedularService{
 	}
 
 	@Override
-	public String killCurrentJob(@Valid String feedId, String jobId, String batchDate) throws Exception{
+	public String killCurrentJob(@Valid String feedId, String jobId, String batchDate) throws Exception {
 		return schedularDAO.killCurrentJob(feedId, jobId, batchDate);
 	}
 
@@ -146,51 +142,76 @@ public class SchedularServiceImpl implements SchedularService{
 	public String unSuspendJobFromMaster(@Valid String feedId) throws Exception {
 		return schedularDAO.unSuspendJobFromMaster(feedId);
 	}
-	
+
 	@Override
 	public ArrayList<BatchDetailsDTO> getBatchDetails() throws Exception {
 		return schedularDAO.getBatchDetails();
 	}
 	
 	@Override
-	public ArrayList<TaskSequenceDTO> getJobDetails(String batch_id,String project_id) throws Exception {
-		return schedularDAO.getJobDetails(batch_id,project_id);
+	public ArrayList<BatchDetailsDTO> getAdhocBatchCreateDetails() throws Exception {
+		return schedularDAO.getAdhocBatchCreateDetails();
 	}
+
 	
 	@Override
-	public ArrayList<String> getKafkaTopic()  throws Exception{
+	public ArrayList<BatchDetailsDTO> getAdhocBatchEditDetails() throws Exception {
+		return schedularDAO.getAdhocBatchEditDetails();
+	}
+
+
+	@Override
+	public ArrayList<BatchDetailsDTO> getCreateBatchDetails() throws Exception {
+		return schedularDAO.getCreateBatchDetails();
+	}
+
+	@Override
+	public ArrayList<BatchDetailsDTO> getEditBatchDetails() throws Exception {
+		return schedularDAO.getEditBatchDetails();
+	}
+
+	@Override
+	public ArrayList<TaskSequenceDTO> getJobDetails(String batch_id, String project_id) throws Exception {
+		return schedularDAO.getJobDetails(batch_id, project_id);
+	}
+
+	@Override
+	public ArrayList<DailyJobsDTO> getAdhocJobDetails(String batch_id, String project_id,String job_name) throws Exception {
+		return schedularDAO.getAdhocJobDetails(batch_id, project_id,job_name);
+	}
+
+	@Override
+	public ArrayList<String> getKafkaTopic() throws Exception {
 		try {
 			return schedularDAO.getKafkaTopic();
 		} catch (Exception e) {
 			throw e;
 		}
 	}
-	
-	@Override
-	public ArrayList<String> getBatchJobs(String batch_id,String project_id) throws Exception  {
-		try {
-			return schedularDAO.getBatchJobs(batch_id,project_id);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-	
-	@Override
-	public BatchTableDetailsDTO extractBatchDetails(String batch_id, String project_id) throws Exception{
-		return schedularDAO.extractBatchDetails(batch_id,project_id);
-	}
-	
 
 	@Override
-	public AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id) throws Exception{
+	public ArrayList<String> getBatchJobs(String batch_id, String project_id) throws Exception {
 		try {
-			return schedularDAO.extractBatchJobDetails(batch_id,project_id,job_id);
+			return schedularDAO.getBatchJobs(batch_id, project_id);
 		} catch (Exception e) {
 			throw e;
 		}
 	}
-	
-	
+
+	@Override
+	public BatchTableDetailsDTO extractBatchDetails(String batch_id, String project_id) throws Exception {
+		return schedularDAO.extractBatchDetails(batch_id, project_id);
+	}
+
+	@Override
+	public AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id, String job_id) throws Exception {
+		try {
+			return schedularDAO.extractBatchJobDetails(batch_id, project_id, job_id);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 	@Override
 	public String invokeRest(String json, String url) throws UnsupportedOperationException, Exception {
 		String resp = null;
@@ -210,5 +231,37 @@ public class SchedularServiceImpl implements SchedularService{
 		}
 		return resp;
 	}
-	
+
+	/*public String recursionF(ArrayList<DailyJobsDTO> arr, String job_name, int i) {
+		String job_name_new = "";
+
+		if (job_name != null) {
+			for (DailyJobsDTO dto : arr) {
+				while (dto.getPredessor_job_id_1().split("_")[2].equalsIgnoreCase(job_name) && job_name_new == "") {
+					i += 1;
+					job_name_new = dto.getJob_name();
+					//System.out.println("job_name is " + job_name_new);
+				}
+			}
+		} else if (job_name == null) {
+			for (DailyJobsDTO dto : arr) {
+				while (dto.getPredessor_job_id_1() == job_name && job_name_new == "") {
+					i += 1;
+					job_name_new = dto.getJob_name();
+				}
+			}
+		}
+		System.out.println("job_name_new is " + job_name_new);
+		return job_name_new;
+	}*/
+
+	@Override
+	public String getBatchSequence(String batch_id,String project_id,String job_name,int i) throws Exception {
+		try {
+			return schedularDAO.getBatchSequence(batch_id, project_id,job_name,i);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 }

@@ -23,6 +23,7 @@
   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/multi.min.css">
   <script src="${pageContext.request.contextPath}/assets/js/multi.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="${pageContext.request.contextPath}/assets/js/validate.js"></script>
   <script type="text/javascript">
   function tog(ids)
   {

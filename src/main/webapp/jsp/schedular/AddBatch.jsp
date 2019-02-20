@@ -1,7 +1,55 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <jsp:include page="../cdg_header.jsp" />
+
+
 <script>
+$(document).ready(function() {
+	$("#dsradio1").on("change", function() {
+		$("#ds1").show();
+		$("#ds4").show();
+		$("#ds2").hide();
+		$("#ds3").hide();
+	})
+	$("#dsradio2").on("change", function() {
+		$("#ds2").show();
+		$("#ds1").hide();
+		$("#ds3").hide();
+		$("#ds4").hide();
+	})
+	   $("#dsradio3").on("change", function() {
+		 $("#ds3").show();
+		$("#ds1").hide();
+		$("#ds2").hide();
+		$("#ds4").hide();
+		})   
+	$("#success-alert").hide();
+    $("#success-alert").fadeTo(10000,10).slideUp(2000, function(){
+    });   
+$("#error-alert").hide();
+    $("#error-alert").fadeTo(10000,10).slideUp(2000, function(){
+     });
+});
+
 	function jsonconstruct(val) {
+		var errors = [];
+		var batch_name;
+		if(val=="create"){
+			batch_name = document.getElementById("batch_name").value;
+		}else if (val == "edit"){
+			batch_name = document.getElementById("batch_val2").value;
+		}
+		var batch_desc = document.getElementById("batch_desc").value;
+		if (!checkLength(batch_name)) {
+			errors[errors.length] = "batch_name";
+		}
+		if (!checkLength(batch_desc)) {
+			errors[errors.length] = "batch_desc";
+		}
+		
+		if (errors.length > 0) {
+			reportErrors(errors);
+			return false;
+		}
 		var data = {};
 		document.getElementById('button_type').value = val;
 		document.getElementById("cron").value = cron_construct();
@@ -12,7 +60,7 @@
 				+ JSON.stringify(data) + '}}';
 		document.getElementById('x').value = x;
 		//console.log(x);
-		//alert(x);
+		alert(x);
 		document.getElementById('AddBatch').submit();
 	}
 	function looper(id, start, end) {
@@ -29,43 +77,7 @@
 		x += '</select>';
 		return x;
 	}
-	$(document).ready(function() {
-		$("#dsradio1").on("change", function() {
-			$("#ds1").show();
-			$("#ds4").show();
-			$("#ds2").hide();
-			$("#ds3").hide();
-		})
-		$("#dsradio2").on("change", function() {
-			$("#ds2").show();
-			$("#ds1").hide();
-			$("#ds3").hide();
-			$("#ds4").hide();
-		})
-		   $("#dsradio3").on("change", function() {
-			 $("#ds3").show();
-			$("#ds1").hide();
-			$("#ds2").hide();
-			$("#ds4").hide();
-			})   
-		$("#batch_val").change(function() {
-			var batch_id = $(this).val();
-			var project_id =document.getElementById('project').value;
-			$.post('/scheduler/BatchEdit', {
-				batch_id : batch_id,
-				project_id :project_id,
-				}, function(data) {
-				$('#cud').html(data)
-			});
-		});
-		$("#success-alert").hide();
-        $("#success-alert").fadeTo(10000,10).slideUp(2000, function(){
-        });   
- $("#error-alert").hide();
-        $("#error-alert").fadeTo(10000,10).slideUp(2000, function(){
-         });
-	});
-
+	
 	function funccheck(val) {
 		if (val == 'create') {
 					window.location.reload();
@@ -193,6 +205,18 @@
 				
 			} 
 		}
+		
+		function testfunc(val){
+			alert(val);
+			var batch_id = val;
+			var project_id =document.getElementById('project').value;
+			$.post('${pageContext.request.contextPath}/scheduler/BatchEdit', {
+				batch_id : batch_id,
+				project_id :project_id,
+				}, function(data) {
+				$('#cud').html(data)
+			});
+		}
 </script>
 <div class="main-panel">
 	<div class="content-wrapper">
@@ -269,14 +293,12 @@
 
 							<div class="form-group" id="connfunc" style="display: none;">
 								<label>Select Batch</label> 
-								<select name="batch_val" id="batch_val"
-									class="form-control">
-									<option value="" selected disabled>Select Batch
-										...</option>
-										<c:forEach items="${batch_val}" var="batch_val">
-										<option value="${batch_val.BATCH_UNIQUE_NAME}">${batch_val.BATCH_UNIQUE_NAME}</option>
+								<input list="batch_val" name="batch_val2" id="batch_val2" class="form-control" onchange="testfunc(this.value)">
+									<datalist id="batch_val" >
+									  <c:forEach items="${batch_val}" var="batch_val">
+										<option value="${batch_val.BATCH_UNIQUE_NAME}">
 									</c:forEach>
-								</select>
+									</datalist>
 							</div>
 							<div id="cud">
 								<fieldset class="fs">
@@ -324,7 +346,7 @@
 									</div>
 								</div>	
 								</div>
-								<div class="col-sm-12" id="adhoc_display" style="display: none;" >The job will be scheduled at 00:00</div>
+								<div class="col-sm-12" id="adhoc_display" style="display: none;" >The job is scheduled on adhoc basis</div>
 								<div class="col-sm-12" id="frequency_test" style="display: none;" >
 								<label>Select Frequency</label> <select class="form-control"
 									name="frequency" id="frequency" onchange="schload(this.value)" style="display: none;">	
@@ -435,7 +457,7 @@
 						</div>
 						</div>
 								</fieldset>
-								<button onclick="jsonconstruct('add');"class="btn btn-rounded btn-gradient-info mr-2">Save</button>
+								<button onclick="return jsonconstruct('add');"class="btn btn-rounded btn-gradient-info mr-2">Save</button>
 							</div>
 						</form>
 					</div>

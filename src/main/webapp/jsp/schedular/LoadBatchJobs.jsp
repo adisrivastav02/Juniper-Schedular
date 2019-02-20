@@ -3,7 +3,7 @@
 $(document).ready(function() {
 	$("#job_id1").change(function() {	
 			var job_id=document.getElementById('job_id1').value;
-			var batch=document.getElementById('batch').value;
+			var batch=document.getElementById('l2').value;
 			var project=document.getElementById('project').value;
 			$.post('${pageContext.request.contextPath}/scheduler/EditJob', {
 				batch : batch,
