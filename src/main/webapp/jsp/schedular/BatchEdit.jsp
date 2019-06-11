@@ -78,7 +78,7 @@ $("#error-alert").hide();
 											<label>Select Frequency</label> <select class="form-control"
 												name="frequency" id="frequency" onchange="schload(this.value)" style="display: none;">	
 												<option value="" selected disabled>Select Frequency</option>
-												<!-- <option value="h">Hourly</option> -->
+												 <option value="h">Hourly</option> 
 												<option value="d">Daily</option>
 												<option value="w">Weekly</option>
 												<option value="m">Monthly</option>

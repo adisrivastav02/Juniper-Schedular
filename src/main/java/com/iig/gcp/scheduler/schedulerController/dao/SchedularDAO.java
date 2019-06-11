@@ -37,15 +37,17 @@ public interface SchedularDAO {
 	
 	//Adhoc Task
 	AdhocJobDTO extractBatchJobDetails(String batch_id, String project_id,String job_id) throws Exception;
-	ArrayList<BatchDetailsDTO> getBatchDetails() throws Exception;
-	ArrayList<BatchDetailsDTO> getCreateBatchDetails() throws Exception;
-	ArrayList<BatchDetailsDTO> getEditBatchDetails() throws Exception;
+	ArrayList<BatchDetailsDTO> getBatchDetails(String project_id) throws Exception;
+	ArrayList<BatchDetailsDTO> getCreateBatchDetails(String project_id) throws Exception;
+	ArrayList<BatchDetailsDTO> getEditBatchDetails(String project_id) throws Exception;
 	ArrayList<TaskSequenceDTO> getJobDetails(String batch_id,String project_id) throws Exception;
 	ArrayList<DailyJobsDTO> getAdhocJobDetails(String batch_id,String project_id,String job_name) throws Exception;
 	ArrayList<String> getKafkaTopic() throws Exception;
 	ArrayList<String> getBatchJobs(String batch_id,String project_id) throws Exception;
 	BatchTableDetailsDTO extractBatchDetails(String batch_id, String project_id) throws Exception;
 	String getBatchSequence(String batch_id,String project_id,String job_name,int i) throws Exception;
-	ArrayList<BatchDetailsDTO> getAdhocBatchCreateDetails() throws Exception;
-	ArrayList<BatchDetailsDTO> getAdhocBatchEditDetails() throws Exception;
+	ArrayList<BatchDetailsDTO> getAdhocBatchCreateDetails(String project_id) throws Exception;
+	ArrayList<BatchDetailsDTO> getAdhocBatchEditDetails(String project_id) throws Exception;
+	ArrayList<String> getGoogleProject(String project_id) throws Exception;
+	ArrayList<String> getServiceAccount(String project_id) throws Exception;
 }

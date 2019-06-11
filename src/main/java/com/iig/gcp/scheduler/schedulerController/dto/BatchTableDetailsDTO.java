@@ -9,6 +9,7 @@ public class BatchTableDetailsDTO {
 	String BATCH_DESC;
 	String DAILY_FLAG;
 	String WEEKLY_FLAG;
+	String HOURLY_FLAG;
 	String MONTHLY_FLAG;
 	String YEARLY_FLAG;
 	String JOB_SCHEDULE_TIME;
@@ -25,6 +26,12 @@ public class BatchTableDetailsDTO {
 	
 	
 	
+	public String getHOURLY_FLAG() {
+		return HOURLY_FLAG;
+	}
+	public void setHOURLY_FLAG(String hOURLY_FLAG) {
+		HOURLY_FLAG = hOURLY_FLAG;
+	}
 	public String getArgument_4() {
 		return Argument_4;
 	}

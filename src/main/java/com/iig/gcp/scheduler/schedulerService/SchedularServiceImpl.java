@@ -144,30 +144,30 @@ public class SchedularServiceImpl implements SchedularService {
 	}
 
 	@Override
-	public ArrayList<BatchDetailsDTO> getBatchDetails() throws Exception {
-		return schedularDAO.getBatchDetails();
+	public ArrayList<BatchDetailsDTO> getBatchDetails(String project_id) throws Exception {
+		return schedularDAO.getBatchDetails(project_id);
 	}
 	
 	@Override
-	public ArrayList<BatchDetailsDTO> getAdhocBatchCreateDetails() throws Exception {
-		return schedularDAO.getAdhocBatchCreateDetails();
+	public ArrayList<BatchDetailsDTO> getAdhocBatchCreateDetails(String project_id) throws Exception {
+		return schedularDAO.getAdhocBatchCreateDetails(project_id);
 	}
 
 	
 	@Override
-	public ArrayList<BatchDetailsDTO> getAdhocBatchEditDetails() throws Exception {
-		return schedularDAO.getAdhocBatchEditDetails();
+	public ArrayList<BatchDetailsDTO> getAdhocBatchEditDetails(String project_id) throws Exception {
+		return schedularDAO.getAdhocBatchEditDetails(project_id);
 	}
 
 
 	@Override
-	public ArrayList<BatchDetailsDTO> getCreateBatchDetails() throws Exception {
-		return schedularDAO.getCreateBatchDetails();
+	public ArrayList<BatchDetailsDTO> getCreateBatchDetails(String project_id) throws Exception {
+		return schedularDAO.getCreateBatchDetails(project_id);
 	}
 
 	@Override
-	public ArrayList<BatchDetailsDTO> getEditBatchDetails() throws Exception {
-		return schedularDAO.getEditBatchDetails();
+	public ArrayList<BatchDetailsDTO> getEditBatchDetails(String project_id) throws Exception {
+		return schedularDAO.getEditBatchDetails(project_id);
 	}
 
 	@Override
@@ -259,6 +259,25 @@ public class SchedularServiceImpl implements SchedularService {
 	public String getBatchSequence(String batch_id,String project_id,String job_name,int i) throws Exception {
 		try {
 			return schedularDAO.getBatchSequence(batch_id, project_id,job_name,i);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	
+	@Override
+	public ArrayList<String> getGoogleProject(String project_id)  throws Exception {
+		try {
+			return schedularDAO.getGoogleProject(project_id);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@Override
+	public ArrayList<String> getServiceAccount(String project_id)  throws Exception {
+		try {
+			return schedularDAO.getServiceAccount(project_id);
 		} catch (Exception e) {
 			throw e;
 		}

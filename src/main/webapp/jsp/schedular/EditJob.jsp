@@ -26,12 +26,12 @@
 										</div>
 										<div class="form-group row">
 										<div class="col-sm-4">
-											<label>Argument_1 </label> <input type="text"
+											<label>Argument_1/GCP Project </label> <input type="text"
 												class="form-control" id="argument_11" name="argument_11"
 												value="${jobArr.argument_1}">
 										</div>
 										<div class="col-sm-4">
-											<label>Argument_2 </label> <input type="text"
+											<label>Argument_2/Service Account </label> <input type="text"
 												class="form-control" id="argument_21" name="argument_21"
 												value="${jobArr.argument_2}">
 										</div>

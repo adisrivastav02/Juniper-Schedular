@@ -9,6 +9,8 @@ function dup_div1() {
 	dyndiv.id = "cud" + i;
 	dyndiv.getElementsByTagName('div')[0].id = "dynshort" + i;
 	dyndiv.getElementsByTagName('div')[2].id = "dynlong" + i;
+	dyndiv.getElementsByTagName('div')[12].id = "Arguments" + i;
+	dyndiv.getElementsByTagName('div')[16].id = "GCP_Arguments" + i;
 	dyndiv.getElementsByTagName('input')[0].id = "job_id" + i;
 	dyndiv.getElementsByTagName('input')[0].name = "job_id" + i;
 	dyndiv.getElementsByTagName('input')[1].id = "job_name" + i;
@@ -25,6 +27,14 @@ function dup_div1() {
 	dyndiv.getElementsByTagName('input')[5].name = "argument_2" + i;
 	dyndiv.getElementsByTagName('input')[6].id = "argument_3" + i;
 	dyndiv.getElementsByTagName('input')[6].name = "argument_3" + i;
+	dyndiv.getElementsByTagName('select')[1].id = "gcp_project" + i;
+	dyndiv.getElementsByTagName('select')[1].name = "gcp_project" + i;
+	dyndiv.getElementsByTagName('select')[2].id = "service_Account" + i;
+	dyndiv.getElementsByTagName('select')[2].name = "service_Account" + i;
+	
+
+	
+	
 	
 	
 	dyn.parentNode.appendChild(dyndiv);
@@ -52,7 +62,6 @@ function togg(ids, idx) {
 }
 
 function jsonconstruct(id) {
-	alert("Reached the jsonconstruct");
 	var data = {};
 	var errors = [];
 	var i;
@@ -74,7 +83,7 @@ function jsonconstruct(id) {
 		errors[errors.length] = "job_id"+i;
 	}
 	if (!checkLength(job_name1)) {
-		errors[errors.length] = "job_name"+i;
+		errors[errors.length] = "job_desc"+i;
 	}
 	if (!checkLength(command_type1)) {
 		errors[errors.length] = "command_type"+i;
@@ -109,6 +118,14 @@ function jsonconstruct(id) {
 			if(document.getElementById("command"+i).value.substr(-4)!=".bql"){
 				errors[errors.length]="Command  path with command type selected as bigquery must end with .bql ";
 			}
+			gcp_project=document.getElementById("gcp_project"+i).value;
+			service_Account=document.getElementById("service_Account"+i).value;
+			if (!checkLength(gcp_project)) {
+				errors[errors.length] = "gcp_project"+i;
+			}
+			if (!checkLength(service_Account)) {
+				errors[errors.length] = "service_Account"+i;
+			}
 		}
 	}
 	
@@ -119,6 +136,13 @@ function jsonconstruct(id) {
 		return false;
 	}
 	
+	for (i=1;i<=counter;i++){
+		if(document.getElementById("command_type"+i).value=="bigquery"){	
+			document.getElementById("argument_1"+i).value=document.getElementById("gcp_project"+i).value;
+			document.getElementById("argument_2"+i).value=document.getElementById("service_Account"+i).value;
+		}
+	}
+	
 		$(".form-control").serializeArray().map(function(x) {
 			data[x.name] = x.value;
 		});
@@ -126,7 +150,7 @@ function jsonconstruct(id) {
 			+ JSON.stringify(data) + '}}';
 	document.getElementById('x').value = x;
 	//console.log(x);
-	//alert(x);
+	alert(x);
 	document.getElementById('AddTaskSave').submit();
 	
 }
@@ -206,8 +230,14 @@ function jsonconstruct(id) {
 		if(val=="bigquery"){
 			//document.getElementById("script"+id).value="x";
 				document.getElementById("script"+id).value="/home/juniper/bql/";
+ 				document.getElementById("Arguments"+id).style.display="none";
+ 				document.getElementById("GCP_Arguments"+id).style.display="block";
+// 				document.getElementById("argument_2"+id).style.display="none";
+// 				document.getElementById("argument_3"+id).style.display="none";
 		}else{
 			//document.getElementById("script"+id).value="y";
+			document.getElementById("Arguments"+id).style.display="block";
+			document.getElementById("GCP_Arguments"+id).style.display="none";
 				document.getElementById("script"+id).value="/home/juniper/scripts/";
 		}
 		
@@ -346,7 +376,7 @@ function jsonconstruct(id) {
 													placeholder="Command">
 											</div>
 										</div>
-										<div class="form-group row">
+										<div id="Arguments1" class="form-group row" style="display: none;">
 											<div class="col-sm-4">
 												<label>Argument_1 </label> <input type="text"
 													class="form-control" id="argument_11" name="argument_11"
@@ -363,7 +393,28 @@ function jsonconstruct(id) {
 													placeholder="argument_3">
 											</div>
 										</div>
-
+										<div id="GCP_Arguments1" class="form-group row" style="display: none;">
+											<div class="col-sm-12">
+												<label>Select GCP Project *</label> <select class="form-control"
+													id="gcp_project1" name="gcp_project1">
+													<option value="" selected disabled>Select GCP Project</option>
+														<c:forEach items="${tproj}" var="tproj">
+																<option value="${tproj}">${tproj}</option>
+															</c:forEach>
+												</select>
+											</div>
+											<div class="col-sm-12">
+												<label>Select Service Account *</label> <select class="form-control"
+													id="service_Account1" name="service_Account1">
+													<option value="" selected disabled>Select Service Account</option>
+													<c:forEach items="${service_acc}" var="service_acc">
+																<option value="${service_acc}">${service_acc}</option>
+															</c:forEach>
+												</select>
+											</div>
+										</div>
+										
+										
 									</div>
 								</div>
 							</div>

@@ -298,6 +298,7 @@ public class SchedularController {
 			modelMap.addAttribute("allLoadJobs", arrArchiveTable);
 		} catch (Exception e) {
 			e.printStackTrace();
+			modelMap.addAttribute("errorStatus", e.getMessage());
 		}
 		return model;
 
@@ -421,10 +422,17 @@ public class SchedularController {
 	@RequestMapping(value = { "/scheduler/AddTask" }, method = RequestMethod.GET)
 	public ModelAndView AddTask(ModelMap modelMap, HttpServletRequest request) {
 		try {
-			ArrayList<BatchDetailsDTO> batch_val1 = schedularService.getCreateBatchDetails();
-			ArrayList<BatchDetailsDTO> batch_val2 = schedularService.getEditBatchDetails();
+			String project_id = (String) request.getSession().getAttribute("project_name");
+			ArrayList<BatchDetailsDTO> batch_val1 = schedularService.getCreateBatchDetails(project_id);
+			ArrayList<BatchDetailsDTO> batch_val2 = schedularService.getEditBatchDetails(project_id);
 			modelMap.addAttribute("batch_val1", batch_val1);
 			modelMap.addAttribute("batch_val2", batch_val2);
+			ArrayList<String> tproj = schedularService
+					.getGoogleProject((String) request.getSession().getAttribute("project_name"));
+			modelMap.addAttribute("tproj", tproj);
+			ArrayList<String> service_acc = schedularService
+					.getServiceAccount((String) request.getSession().getAttribute("project_name"));
+			modelMap.addAttribute("service_acc", service_acc);
 			ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
 			modelMap.addAttribute("kafka_topic", kafka_topic);
 		} catch (Exception e) {
@@ -441,7 +449,7 @@ public class SchedularController {
 			@ModelAttribute("button_type") String button_type, ModelMap model, HttpServletRequest request,
 			ModelMap modelMap) throws UnsupportedOperationException, Exception {
 		String resp = null;
-		System.out.println("x is "+x);
+		System.out.println("x is " + x);
 		try {
 			if (button_type.equalsIgnoreCase("create")) {
 				resp = schedularService.invokeRest(x, "addScheduleData");
@@ -467,18 +475,25 @@ public class SchedularController {
 				}
 			}
 
+			modelMap.addAttribute("usernm", request.getSession().getAttribute("user_name"));
+			model.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
+			String project_id = (String) request.getSession().getAttribute("project_name");
+			ArrayList<BatchDetailsDTO> batch_val1 = schedularService.getCreateBatchDetails(project_id);
+			modelMap.addAttribute("batch_val1", batch_val1);
+			ArrayList<BatchDetailsDTO> batch_val2 = schedularService.getEditBatchDetails(project_id);
+			modelMap.addAttribute("batch_val2", batch_val2);
+			ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
+			modelMap.addAttribute("kafka_topic", kafka_topic);
+			ArrayList<String> tproj = schedularService
+					.getGoogleProject((String) request.getSession().getAttribute("project_name"));
+			modelMap.addAttribute("tproj", tproj);
+			ArrayList<String> service_acc = schedularService
+					.getServiceAccount((String) request.getSession().getAttribute("project_name"));
+			modelMap.addAttribute("service_acc", service_acc);
 		} catch (Exception e) {
 			modelMap.addAttribute("errorString", e.getMessage());
 
 		}
-		modelMap.addAttribute("usernm", request.getSession().getAttribute("user_name"));
-		model.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
-		ArrayList<BatchDetailsDTO> batch_val1 = schedularService.getCreateBatchDetails();
-		modelMap.addAttribute("batch_val1", batch_val1);
-		ArrayList<BatchDetailsDTO> batch_val2 = schedularService.getEditBatchDetails();
-		modelMap.addAttribute("batch_val2", batch_val2);
-		ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
-		modelMap.addAttribute("kafka_topic", kafka_topic);
 		return new ModelAndView("schedular/AddTask");
 	}
 
@@ -486,7 +501,8 @@ public class SchedularController {
 	public ModelAndView AddBatch1(@Valid ModelMap model, HttpServletRequest request) {
 		try {
 			model.addAttribute("usernm", request.getSession().getAttribute("user_name"));
-			ArrayList<BatchDetailsDTO> batch_val = schedularService.getBatchDetails();
+			String project_id = (String) request.getSession().getAttribute("project_name");
+			ArrayList<BatchDetailsDTO> batch_val = schedularService.getBatchDetails(project_id);
 			model.addAttribute("batch_val", batch_val);
 			model.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
 			ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
@@ -494,7 +510,7 @@ public class SchedularController {
 			// String message = schedularService.killCurrentJob(feedId, jobId, batchDate);
 			// modelMap.addAttribute("successString", message);
 		} catch (Exception e) {
-			// modelMap.addAttribute("errorStatus", e.getMessage());
+			model.addAttribute("errorStatus", e.getMessage());
 
 		}
 		return new ModelAndView("schedular/AddBatch");
@@ -505,6 +521,7 @@ public class SchedularController {
 			@ModelAttribute("button_type") String button_type, ModelMap model, HttpServletRequest request,
 			ModelMap modelMap) throws UnsupportedOperationException, Exception {
 		String message = "";
+		System.out.println("x is "+x);
 		try {
 			if (button_type.equalsIgnoreCase("add")) {
 				message = schedularService.invokeRest(x, "saveBatchDetails");
@@ -522,16 +539,17 @@ public class SchedularController {
 				}
 			}
 
+			modelMap.addAttribute("usernm", request.getSession().getAttribute("user_name"));
+			model.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
+			String project_id = (String) request.getSession().getAttribute("project_name");
+			ArrayList<BatchDetailsDTO> batch_val = schedularService.getBatchDetails(project_id);
+			model.addAttribute("batch_val", batch_val);
+			ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
+			model.addAttribute("kafka_topic", kafka_topic);
 		} catch (Exception e) {
 			modelMap.addAttribute("errorString", e.getMessage());
 
 		}
-		modelMap.addAttribute("usernm", request.getSession().getAttribute("user_name"));
-		model.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
-		ArrayList<BatchDetailsDTO> batch_val = schedularService.getBatchDetails();
-		model.addAttribute("batch_val", batch_val);
-		ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
-		model.addAttribute("kafka_topic", kafka_topic);
 		return new ModelAndView("schedular/AddBatch");
 	}
 
@@ -540,8 +558,9 @@ public class SchedularController {
 		try {
 			modelMap.addAttribute("usernm", request.getSession().getAttribute("user_name"));
 			modelMap.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
-			ArrayList<BatchDetailsDTO> batch_val1 = schedularService.getAdhocBatchCreateDetails();
-			ArrayList<BatchDetailsDTO> batch_val2 = schedularService.getAdhocBatchEditDetails();
+			String project_id = (String) request.getSession().getAttribute("project_name");
+			ArrayList<BatchDetailsDTO> batch_val1 = schedularService.getAdhocBatchCreateDetails(project_id);
+			ArrayList<BatchDetailsDTO> batch_val2 = schedularService.getAdhocBatchEditDetails(project_id);
 			modelMap.addAttribute("batch_val1", batch_val1);
 			modelMap.addAttribute("batch_val2", batch_val2);
 
@@ -602,8 +621,9 @@ public class SchedularController {
 			}
 			modelMap.addAttribute("usernm", request.getSession().getAttribute("user_name"));
 			modelMap.addAttribute("project", (String) request.getSession().getAttribute("project_name"));
-			ArrayList<BatchDetailsDTO> batch_val1 = schedularService.getAdhocBatchCreateDetails();
-			ArrayList<BatchDetailsDTO> batch_val2 = schedularService.getAdhocBatchEditDetails();
+			String project_id = (String) request.getSession().getAttribute("project_name");
+			ArrayList<BatchDetailsDTO> batch_val1 = schedularService.getAdhocBatchCreateDetails(project_id);
+			ArrayList<BatchDetailsDTO> batch_val2 = schedularService.getAdhocBatchEditDetails(project_id);
 			modelMap.addAttribute("batch_val1", batch_val1);
 			modelMap.addAttribute("batch_val2", batch_val2);
 		} catch (Exception e) {
@@ -616,37 +636,44 @@ public class SchedularController {
 	public ModelAndView BatchEdit(@Valid @ModelAttribute("batch_id") String batch_id,
 			@Valid @ModelAttribute("project_id") String project_id, ModelMap model, HttpServletRequest request)
 			throws UnsupportedOperationException, Exception {
-		String adhoc_flag = "";
-		String regular_flag = "";
-		String event_flag = "";
+		try {
+			String adhoc_flag = "";
+			String regular_flag = "";
+			String event_flag = "";
 
-		BatchTableDetailsDTO batchArr = schedularService.extractBatchDetails(batch_id, project_id);
-		if (batchArr.getSCHEDULE_TYPE().contains("R") && batchArr.getDAILY_FLAG() != null) {
-			adhoc_flag = "The batch is regular type and scheduled everyday at " + batchArr.getJOB_SCHEDULE_TIME();
-		} else if (batchArr.getSCHEDULE_TYPE().contains("R") && batchArr.getWEEKLY_FLAG() != null) {
-			adhoc_flag = "The batch is regular type and scheduled everyday at " + batchArr.getJOB_SCHEDULE_TIME()
-					+ " on every " + batchArr.getWEEK_RUN_DAY();
-		} else if (batchArr.getSCHEDULE_TYPE().contains("R") && batchArr.getMONTHLY_FLAG() != null) {
-			adhoc_flag = "The batch is regular type and scheduled everyday at " + batchArr.getJOB_SCHEDULE_TIME()
-					+ " on every " + batchArr.getMONTH_RUN_DAY() + " of " + batchArr.getMONTH_RUN_VAL();
-		} else if (batchArr.getSCHEDULE_TYPE().contains("O") && batchArr.getArgument_4() == null) {
-			adhoc_flag = "The batch is adhoc type and scheduled everyday at 00:00";
-		} else if (batchArr.getSCHEDULE_TYPE().contains("F") && batchArr.getArgument_4() != null) {
-			adhoc_flag = "The batch is event based type and scheduled everyday at 00:00 with filewatcher as "
-					+ batchArr.getArgument_4();
-		} else if (batchArr.getSCHEDULE_TYPE().contains("K") && batchArr.getArgument_4() != null) {
-			adhoc_flag = "The batch is event based type and scheduled everyday at 00:00 with Kafka topic as "
-					+ batchArr.getArgument_4();
-		} else if (batchArr.getSCHEDULE_TYPE().contains("A") && batchArr.getArgument_4() != null) {
-			adhoc_flag = "The batch is event based type and scheduled everyday at 00:00 with API value as "
-					+ batchArr.getArgument_4();
+			BatchTableDetailsDTO batchArr = schedularService.extractBatchDetails(batch_id, project_id);
+			if (batchArr.getSCHEDULE_TYPE().contains("R") && batchArr.getDAILY_FLAG() != null) {
+				adhoc_flag = "The batch is regular type and scheduled everyday at " + batchArr.getJOB_SCHEDULE_TIME();
+			} else if (batchArr.getSCHEDULE_TYPE().contains("R") && batchArr.getHOURLY_FLAG() != null) {
+				adhoc_flag = "The batch is regular type and scheduled every hour at " + batchArr.getJOB_SCHEDULE_TIME();
+			}
+			else if (batchArr.getSCHEDULE_TYPE().contains("R") && batchArr.getWEEKLY_FLAG() != null) {
+				adhoc_flag = "The batch is regular type and scheduled everyday at " + batchArr.getJOB_SCHEDULE_TIME()
+						+ " on every " + batchArr.getWEEK_RUN_DAY();
+			} else if (batchArr.getSCHEDULE_TYPE().contains("R") && batchArr.getMONTHLY_FLAG() != null) {
+				adhoc_flag = "The batch is regular type and scheduled everyday at " + batchArr.getJOB_SCHEDULE_TIME()
+						+ " on every " + batchArr.getMONTH_RUN_DAY() + " of " + batchArr.getMONTH_RUN_VAL();
+			} else if (batchArr.getSCHEDULE_TYPE().contains("O") && batchArr.getArgument_4() == null) {
+				adhoc_flag = "The batch is adhoc type and scheduled everyday at 00:00";
+			} else if (batchArr.getSCHEDULE_TYPE().contains("F") && batchArr.getArgument_4() != null) {
+				adhoc_flag = "The batch is event based type and scheduled everyday at 00:00 with filewatcher as "
+						+ batchArr.getArgument_4();
+			} else if (batchArr.getSCHEDULE_TYPE().contains("K") && batchArr.getArgument_4() != null) {
+				adhoc_flag = "The batch is event based type and scheduled everyday at 00:00 with Kafka topic as "
+						+ batchArr.getArgument_4();
+			} else if (batchArr.getSCHEDULE_TYPE().contains("A") && batchArr.getArgument_4() != null) {
+				adhoc_flag = "The batch is event based type and scheduled everyday at 00:00 with API value as "
+						+ batchArr.getArgument_4();
+			}
+			model.addAttribute("adhoc_flag", adhoc_flag);
+			model.addAttribute("regular_flag", regular_flag);
+			model.addAttribute("event_flag", event_flag);
+			model.addAttribute("batchArr", batchArr);
+			ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
+			model.addAttribute("kafka_topic", kafka_topic);
+		} catch (Exception e) {
+			model.addAttribute("errorString", e.getMessage());
 		}
-		model.addAttribute("adhoc_flag", adhoc_flag);
-		model.addAttribute("regular_flag", regular_flag);
-		model.addAttribute("event_flag", event_flag);
-		model.addAttribute("batchArr", batchArr);
-		ArrayList<String> kafka_topic = schedularService.getKafkaTopic();
-		model.addAttribute("kafka_topic", kafka_topic);
 		return new ModelAndView("schedular/BatchEdit");
 	}
 
@@ -654,8 +681,12 @@ public class SchedularController {
 	public ModelAndView LoadBatchJobs(@Valid @ModelAttribute("batch") String batch_id,
 			@Valid @ModelAttribute("project") String project_id, ModelMap model, HttpServletRequest request)
 			throws UnsupportedOperationException, Exception {
-		ArrayList<String> job_id1 = schedularService.getBatchJobs(batch_id, project_id);
-		model.addAttribute("job_id1", job_id1);
+		try {
+			ArrayList<String> job_id1 = schedularService.getBatchJobs(batch_id, project_id);
+			model.addAttribute("job_id1", job_id1);
+		} catch (Exception e) {
+			model.addAttribute("errorString", e.getMessage());
+		}
 		return new ModelAndView("schedular/LoadBatchJobs");
 	}
 
@@ -663,11 +694,15 @@ public class SchedularController {
 	public ModelAndView EditJob(@Valid @ModelAttribute("batch") String batch_id,
 			@Valid @ModelAttribute("project") String project_id, @Valid @ModelAttribute("job_id") String job_id,
 			ModelMap model, HttpServletRequest request) throws UnsupportedOperationException, Exception {
-		AdhocJobDTO jobArr = schedularService.extractBatchJobDetails(batch_id, project_id, job_id);
-		String script1=jobArr.getCommand().substring(1,jobArr.getCommand().lastIndexOf('/')+1);
-		System.out.println("script1 is "+script1);
-		model.addAttribute("script1", script1);
-		model.addAttribute("jobArr", jobArr);
+		try {
+			AdhocJobDTO jobArr = schedularService.extractBatchJobDetails(batch_id, project_id, job_id);
+			String script1 = jobArr.getCommand().substring(1, jobArr.getCommand().lastIndexOf('/') + 1);
+			System.out.println("script1 is " + script1);
+			model.addAttribute("script1", script1);
+			model.addAttribute("jobArr", jobArr);
+		} catch (Exception e) {
+			model.addAttribute("errorString", e.getMessage());
+		}
 		return new ModelAndView("schedular/EditJob");
 	}
 

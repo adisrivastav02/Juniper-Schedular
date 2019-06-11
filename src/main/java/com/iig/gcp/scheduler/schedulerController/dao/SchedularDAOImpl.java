@@ -50,8 +50,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 
 		return arrFeedId;
@@ -88,8 +90,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 		return scheduledJobs;
 	}
@@ -135,8 +139,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 		return scheduledJobs;
 	}
@@ -162,7 +168,8 @@ public class SchedularDAOImpl implements SchedularDAO {
 
 		} finally {
 			pstm1.close();
-			conn.close();
+			if (conn != null)
+				conn.close();
 		}
 
 	}
@@ -188,8 +195,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 		return arrFeedId;
 	}
@@ -218,8 +227,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 		return arrArchiveJobsDTO;
 	}
@@ -252,8 +263,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 		return arrArchiveJobsDTO;
 	}
@@ -286,8 +299,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 		return archiveJobs;
 	}
@@ -318,8 +333,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 		return hsMap;
 	}
@@ -353,8 +370,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 		return scheduledJobs;
 	}
@@ -379,8 +398,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 		return arrFeedId;
 	}
@@ -421,8 +442,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 		return scheduledJobs;
 	}
@@ -459,10 +482,14 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 		} finally {
-			pstmd1.close();
-			pstm.close();
-			pstm1.close();
-			conn.close();
+			if (pstmd1 != null)
+				pstmd1.close();
+			if (pstm != null)
+				pstm.close();
+			if (pstm1 != null)
+				pstm1.close();
+			if (conn != null)
+				conn.close();
 		}
 	}
 
@@ -484,8 +511,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (Exception e) {
 			throw e;
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 	}
 
@@ -510,8 +539,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (Exception e) {
 			throw e;
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 	}
 
@@ -538,8 +569,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 
 	}
@@ -559,21 +592,25 @@ public class SchedularDAOImpl implements SchedularDAO {
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 		} finally {
-			pstm.close();
-			conn.close();
+			if (pstm != null)
+				pstm.close();
+			if (conn != null)
+				conn.close();
 		}
 
 	}
 
 	@Override
-	public ArrayList<BatchDetailsDTO> getBatchDetails() throws Exception {
+	public ArrayList<BatchDetailsDTO> getBatchDetails(String project_id) throws Exception {
 		Connection connection = null;
 		BatchDetailsDTO conn = null;
 		PreparedStatement pstm = null;
 		ArrayList<BatchDetailsDTO> arrBatchDetails = new ArrayList<BatchDetailsDTO>();
 		try {
 			connection = ConnectionUtils.getConnection();
-			pstm = connection.prepareStatement(" select BATCH_UNIQUE_NAME from JUNIPER_SCH_BATCH_DETAILS ");
+			String selectQuery = "select BATCH_UNIQUE_NAME from JUNIPER_SCH_BATCH_DETAILS where project_id=(select PROJECT_SEQUENCE from JUNIPER_PROJECT_MASTER where PROJECT_ID='"
+					+ project_id + "')";
+			pstm = connection.prepareStatement(selectQuery);
 
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
@@ -585,8 +622,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 		} finally {
 			try {
-				pstm.close();
-				connection.close();
+				if (pstm != null)
+					pstm.close();
+				if (connection != null)
+					connection.close();
 			} catch (SQLException e) {
 				throw e;
 			}
@@ -598,17 +637,19 @@ public class SchedularDAOImpl implements SchedularDAO {
 	}
 
 	@Override
-	public ArrayList<BatchDetailsDTO> getCreateBatchDetails() throws Exception {
+	public ArrayList<BatchDetailsDTO> getCreateBatchDetails(String project_id) throws Exception {
 		Connection connection = null;
 		BatchDetailsDTO conn = null;
 		PreparedStatement pstm = null;
 		ArrayList<BatchDetailsDTO> arrBatchDetails = new ArrayList<BatchDetailsDTO>();
 		try {
 			connection = ConnectionUtils.getConnection();
-
-			pstm = connection.prepareStatement(" select bt.BATCH_UNIQUE_NAME from JUNIPER_SCH_BATCH_DETAILS bt "
+			String selectQuery = " select bt.BATCH_UNIQUE_NAME from JUNIPER_SCH_BATCH_DETAILS bt "
 					+ "left join JUNIPER_SCH_ADHOC_JOB_DETAIL ad  on bt.BATCH_UNIQUE_NAME=ad.BATCH_ID and bt.project_id=ad.project_id "
-					+ "where ad.batch_id is null");
+					+ "where ad.batch_id is null"
+					+ " and bt.project_id=(select PROJECT_SEQUENCE from JUNIPER_PROJECT_MASTER where PROJECT_ID='"
+					+ project_id + "')";
+			pstm = connection.prepareStatement(selectQuery);
 
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
@@ -620,8 +661,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 		} finally {
 			try {
-				pstm.close();
-				connection.close();
+				if (pstm != null)
+					pstm.close();
+				if (connection != null)
+					connection.close();
 			} catch (SQLException e) {
 				throw e;
 			}
@@ -633,14 +676,17 @@ public class SchedularDAOImpl implements SchedularDAO {
 	}
 
 	@Override
-	public ArrayList<BatchDetailsDTO> getEditBatchDetails() throws Exception {
+	public ArrayList<BatchDetailsDTO> getEditBatchDetails(String project_id) throws Exception {
 		Connection connection = null;
 		BatchDetailsDTO conn = null;
 		PreparedStatement pstm = null;
 		ArrayList<BatchDetailsDTO> arrBatchDetails = new ArrayList<BatchDetailsDTO>();
 		try {
 			connection = ConnectionUtils.getConnection();
-			pstm = connection.prepareStatement(" select distinct BATCH_ID   from JUNIPER_SCH_ADHOC_JOB_DETAIL ");
+			String selectQuery = " select distinct BATCH_ID from JUNIPER_SCH_ADHOC_JOB_DETAIL"
+					+ " where project_id=(select PROJECT_SEQUENCE from JUNIPER_PROJECT_MASTER where PROJECT_ID='"
+					+ project_id + "')";
+			pstm = connection.prepareStatement(selectQuery);
 
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
@@ -652,8 +698,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 		} finally {
 			try {
-				pstm.close();
-				connection.close();
+				if (pstm != null)
+					pstm.close();
+				if (connection != null)
+					connection.close();
 			} catch (SQLException e) {
 				throw e;
 			}
@@ -689,8 +737,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 		} finally {
 			try {
-				pstm.close();
-				connection.close();
+				if (pstm != null)
+					pstm.close();
+				if (connection != null)
+					connection.close();
 			} catch (SQLException e) {
 				throw e;
 			}
@@ -754,8 +804,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 		} finally {
 			try {
-				pstm.close();
-				connection.close();
+				if (pstm != null)
+					pstm.close();
+				if (connection != null)
+					connection.close();
 			} catch (SQLException e) {
 				throw e;
 			}
@@ -782,8 +834,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 		} finally {
 			try {
-				pstm.close();
-				connection.close();
+				if (pstm != null)
+					pstm.close();
+				if (connection != null)
+					connection.close();
 			} catch (Exception e) {
 				throw e;
 			}
@@ -808,12 +862,14 @@ public class SchedularDAOImpl implements SchedularDAO {
 			while (rs.next()) {
 				arr.add(rs.getString(1));
 			}
-			pstm.close();
+			if (pstm != null)
+				pstm.close();
 		} catch (Exception e) {
 			throw e;
 		} finally {
 			try {
-				connection.close();
+				if (connection != null)
+					connection.close();
 			} catch (Exception e) {
 				throw e;
 			}
@@ -829,7 +885,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 		try {
 			connection = ConnectionUtils.getConnection();
 			String selectQuery = "select BATCH_ID,BATCH_UNIQUE_NAME,BATCH_DESCRIPTION,DAILY_FLAG,WEEKLY_FLAG,MONTHLY_FLAG,YEARLY_FLAG,JOB_SCHEDULE_TIME,"
-					+ "ARGUMENT_4,WEEK_RUN_DAY,MONTH_RUN_VAL,MONTH_RUN_DAY,PROJECT_ID,WEEK_NUM_MONTH,SCHEDULE_TYPE"
+					+ "ARGUMENT_4,WEEK_RUN_DAY,MONTH_RUN_VAL,MONTH_RUN_DAY,PROJECT_ID,WEEK_NUM_MONTH,SCHEDULE_TYPE,HOURLY_FLAG"
 					+ " from JUNIPER_SCH_BATCH_DETAILS where BATCH_UNIQUE_NAME='" + batch_id + "' and PROJECT_ID="
 					+ "(select project_sequence from JUNIPER_PROJECT_MASTER where PROJECT_ID='" + project_id + "')";
 			pstm = connection.prepareStatement(selectQuery);
@@ -849,13 +905,16 @@ public class SchedularDAOImpl implements SchedularDAO {
 				arr.setWEEK_RUN_DAY(rs.getString("WEEK_RUN_DAY"));
 				arr.setSCHEDULE_TYPE(rs.getString("SCHEDULE_TYPE"));
 				arr.setProject_sequence(rs.getInt("PROJECT_ID"));
+				arr.setHOURLY_FLAG(rs.getString("HOURLY_FLAG"));
 			}
 		} catch (Exception e) {
 			throw e;
 		} finally {
 			try {
-				pstm.close();
-				connection.close();
+				if (pstm != null)
+					pstm.close();
+				if (connection != null)
+					connection.close();
 			} catch (Exception e) {
 				throw e;
 			}
@@ -890,8 +949,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 		} finally {
 			try {
-				pstm.close();
-				connection.close();
+				if (pstm != null)
+					pstm.close();
+				if (connection != null)
+					connection.close();
 			} catch (Exception e) {
 				throw e;
 			}
@@ -919,7 +980,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 	}
 
 	@Override
-	public ArrayList<BatchDetailsDTO> getAdhocBatchCreateDetails() throws Exception {
+	public ArrayList<BatchDetailsDTO> getAdhocBatchCreateDetails(String project_id) throws Exception {
 		Connection connection = null;
 		BatchDetailsDTO conn = null;
 		PreparedStatement pstm = null;
@@ -930,8 +991,9 @@ public class SchedularDAOImpl implements SchedularDAO {
 			pstm = connection.prepareStatement(" select distinct a.batch_id from JUNIPER_SCH_ADHOC_JOB_DETAIL a "
 					+ "left join (select distinct ms.batch_id as batch_id "
 					+ "from JUNIPER_SCH_master_JOB_DETAIL ms inner join JUNIPER_SCH_ADHOC_JOB_DETAIL ad "
-					+ "on ms.BATCH_ID=ad.BATCH_ID and ms.project_id=ad.project_id)x "
-					+ "on a.batch_id=x.batch_id where x.batch_id is null ");
+					+ "on ms.BATCH_ID=ad.BATCH_ID and ms.project_id=ad.project_id" + " where ms.PROJECT_ID="
+					+ "(select project_sequence from JUNIPER_PROJECT_MASTER where PROJECT_ID='" + project_id + "')"
+					+ ")x " + "on a.batch_id=x.batch_id where x.batch_id is null ");
 
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
@@ -943,8 +1005,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 		} finally {
 			try {
-				pstm.close();
-				connection.close();
+				if (pstm != null)
+					pstm.close();
+				if (connection != null)
+					connection.close();
 			} catch (SQLException e) {
 				throw e;
 			}
@@ -956,7 +1020,7 @@ public class SchedularDAOImpl implements SchedularDAO {
 	}
 
 	@Override
-	public ArrayList<BatchDetailsDTO> getAdhocBatchEditDetails() throws Exception {
+	public ArrayList<BatchDetailsDTO> getAdhocBatchEditDetails(String project_id) throws Exception {
 		Connection connection = null;
 		BatchDetailsDTO conn = null;
 		PreparedStatement pstm = null;
@@ -966,7 +1030,8 @@ public class SchedularDAOImpl implements SchedularDAO {
 
 			pstm = connection.prepareStatement(" select distinct ms.batch_id "
 					+ "from JUNIPER_SCH_master_JOB_DETAIL ms inner join JUNIPER_SCH_ADHOC_JOB_DETAIL ad "
-					+ "on ms.BATCH_ID=ad.BATCH_ID and ms.project_id=ad.project_id");
+					+ "on ms.BATCH_ID=ad.BATCH_ID and ms.project_id=ad.project_id " + "and ms.PROJECT_ID="
+					+ "(select project_sequence from JUNIPER_PROJECT_MASTER where PROJECT_ID='" + project_id + "')");
 
 			ResultSet rs = pstm.executeQuery();
 			while (rs.next()) {
@@ -978,8 +1043,10 @@ public class SchedularDAOImpl implements SchedularDAO {
 			throw e;
 		} finally {
 			try {
-				pstm.close();
-				connection.close();
+				if (pstm != null)
+					pstm.close();
+				if (connection != null)
+					connection.close();
 			} catch (SQLException e) {
 				throw e;
 			}
@@ -988,6 +1055,64 @@ public class SchedularDAOImpl implements SchedularDAO {
 
 		return arrBatchDetails;
 
+	}
+
+	public ArrayList<String> getGoogleProject(String project_id) throws Exception {
+		ArrayList<String> arr = new ArrayList<String>();
+		Connection connection = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		try {
+			connection = ConnectionUtils.getConnection();
+			pstm = connection.prepareStatement(
+					"select gcp_project from JUNIPER_EXT_GCP_MASTER where project_sequence=(select project_sequence from juniper_project_master where project_id='"
+							+ project_id + "')");
+			rs = pstm.executeQuery();
+			while (rs.next()) {
+				arr.add(rs.getString(1));
+			}
+		} catch (ClassNotFoundException | SQLException e) {
+			System.out.println("Exception occured " + e);
+			throw e;
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (pstm != null)
+				if (pstm != null)
+					pstm.close();
+			if (connection != null)
+				connection.close();
+		}
+		return arr;
+	}
+
+	public ArrayList<String> getServiceAccount(String project_id) throws Exception {
+		ArrayList<String> arr = new ArrayList<String>();
+		Connection connection = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		try {
+			connection = ConnectionUtils.getConnection();
+			pstm = connection.prepareStatement(
+					"select SERVICE_ACCOUNT_NAME from JUNIPER_EXT_GCP_MASTER where project_sequence=(select project_sequence from juniper_project_master where project_id='"
+							+ project_id + "')");
+			rs = pstm.executeQuery();
+			while (rs.next()) {
+				arr.add(rs.getString(1));
+			}
+		} catch (ClassNotFoundException | SQLException e) {
+			System.out.println("Exception occured " + e);
+			throw e;
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (pstm != null)
+				if (pstm != null)
+					pstm.close();
+			if (connection != null)
+				connection.close();
+		}
+		return arr;
 	}
 
 }
